@@ -7,6 +7,6 @@ playing with new logo ideas
 ```bash
 nvm use 16;
 npm i;
-npx vite;
+npx vite serve src;
 ```
 
