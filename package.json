@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/toru-digital/logo/issues"
   },
-  "homepage": "https://github.com/toru-digital/logo#readme"
+  "homepage": "https://github.com/toru-digital/logo#readme",
+  "dependencies": {
+    "three": "^0.155.0"
+  },
+  "devDependencies": {
+    "vite": "^4.4.8"
+  }
 }
