@@ -13,7 +13,7 @@ let logoTexture
 
 let settings = {
 	letter_size : 150,
-	logo_width : 800,
+	tracking : 200,
 	u_ratio: 0.15,
 	t_ratio: 0.4,
 };
@@ -68,21 +68,61 @@ function buildScene () {
 function getT () {
 	const middle = settings.letter_size * settings.t_ratio;
 	const corner = (settings.letter_size - middle) * 0.5;
+	const offset = settings.letter_size * -0.5;
 
 	const shape = new THREE.Shape()
-		.moveTo (corner, 0)
-		.lineTo (corner + middle, 0)
-		.lineTo (corner + middle, corner)
-		.lineTo (settings.letter_size, corner)
-		.lineTo (settings.letter_size, corner + middle)
-		.lineTo (corner + middle, corner + middle)
-		.lineTo (corner + middle, settings.letter_size)
-		.lineTo (corner, settings.letter_size)
-		.lineTo (corner, corner + middle)
-		.lineTo (0, corner + middle)
-		.lineTo (0, corner)
-		.lineTo (corner, corner)
-		.moveTo (corner, 0)
+		.moveTo (
+			corner + offset,
+			0 + offset
+		)
+		.lineTo (
+			corner + middle + offset, 
+			0 + offset
+		)
+		.lineTo (
+			corner + middle + offset, 
+			corner + offset
+		)
+		.lineTo (
+			settings.letter_size + offset,
+			corner + offset
+		)
+		.lineTo (
+			settings.letter_size + offset,
+			corner + middle + offset
+		)
+		.lineTo (
+			corner + middle + offset,
+			corner + middle + offset
+		)
+		.lineTo (
+			corner + middle + offset,
+			settings.letter_size + offset
+		)
+		.lineTo (
+			corner + offset,
+			settings.letter_size + offset
+		)
+		.lineTo (
+			corner + offset,
+			corner + middle + offset
+		)
+		.lineTo (
+			0 + offset,
+			corner + middle + offset
+		)
+		.lineTo (
+			0 + offset,
+			corner + offset
+		)
+		.lineTo (
+			corner + offset,
+			corner + offset
+		)
+		.moveTo (
+			corner + offset,
+			0 + offset
+		)
 	
 	let geometry = new THREE.ShapeGeometry (shape);
 	let mesh = new THREE.Mesh ( 
@@ -94,8 +134,8 @@ function getT () {
 }
 
 function getO () {
-	const geometry = new THREE.CircleGeometry ( settings.letter_size * 0.5, 32 ); 
-	const mesh = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: logoTexture } )
+	const geometry = new THREE.CircleGeometry (settings.letter_size * 0.5, 32); 
+	const mesh = new THREE.MeshPhongMaterial ({side: THREE.DoubleSide, map: logoTexture})
 	const shape = new THREE.Mesh (
 		geometry,
 		mesh
@@ -105,13 +145,30 @@ function getO () {
 }
 
 function getR () {
+	const offset = settings.letter_size * -0.5;
+
 	const size = settings.letter_size;
 	const shape = new THREE.Shape()
-		.moveTo (0, 0)
-		.lineTo (size, 0)
-		.lineTo (size, size)
-		.lineTo (0, size)
-		.lineTo (0, 0)
+		.moveTo (
+			0 + offset, 
+			0 + offset
+		)
+		.lineTo (
+			size + offset, 
+			0 + offset
+		)
+		.lineTo (
+			size + offset, 
+			size + offset
+		)
+		.lineTo (
+			0 + offset, 
+			size + offset
+		)
+		.lineTo (
+			0 + offset, 
+			0 + offset
+		)
 
 	let rGeometry = new THREE.ShapeGeometry ( shape );
 	let mesh = new THREE.Mesh ( 
@@ -123,15 +180,24 @@ function getR () {
 
 function getU () {
 	const corner = settings.letter_size * settings.u_ratio
+	const offset = settings.letter_size * -0.5;
 
 	const shape = new THREE.Shape()
-		.moveTo (settings.letter_size - corner * 2, 0)
-		.lineTo (corner * 2, 0)
-		.bezierCurveTo (0, 0, 0, corner * 2, 0, corner * 2)
-		.lineTo (0, settings.letter_size)
-		.lineTo (settings.letter_size, settings.letter_size)
-		.lineTo (settings.letter_size, corner * 2)
-		.bezierCurveTo (settings.letter_size, corner*2, settings.letter_size, 0, settings.letter_size - corner * 2, 0)
+		.moveTo (settings.letter_size - corner * 2 + offset, 0 + offset)
+		.lineTo (corner * 2 + offset, 0 + offset)
+		.bezierCurveTo (
+			0 + offset, 0 + offset, 
+			0 + offset, corner * 2 + offset, 
+			0 + offset, corner * 2 + offset
+		)
+		.lineTo (0 + offset, settings.letter_size + offset)
+		.lineTo (settings.letter_size + offset, settings.letter_size + offset)
+		.lineTo (settings.letter_size + offset, corner * 2 + offset)
+		.bezierCurveTo (
+			settings.letter_size + offset, corner*2 + offset, 
+			settings.letter_size + offset, 0 + offset, 
+			settings.letter_size - corner * 2 + offset, 0 + offset
+		)
 
 	let geometry = new THREE.ShapeGeometry ( shape );
 	let mesh = new THREE.Mesh ( 
@@ -143,44 +209,22 @@ function getU () {
 }
 
 function buildLogo () {
+	const shapes = [ getT (), getO (), getR (), getU ()]
 
-	const t = getT ();
-	t.position.set (
-		settings.logo_width * -0.5 - settings.letter_size * 0.5,
-		settings.letter_size * -0.5, 
-		0
-	);
-	logoGroup.add (t);
-
-	const o = getO ();
-	o.position.set (
-		settings.logo_width * -0.5 + (settings.logo_width / 3) , 
-		0, 
-		0
-	);
-	logoGroup.add (o);
-
-	const r = getR ();
-	r.position.set (
-		settings.logo_width * -0.5 + (settings.logo_width / 3) * 2  - settings.letter_size*0.5,
-		settings.letter_size * -0.5, 
-		0 
-	);
-	logoGroup.add (r);
-
-	const u = getU ();
-	u.position.set (
-		settings.logo_width * -0.5 + (settings.logo_width / 3) * 3  - settings.letter_size*0.5,
-		settings.letter_size * -0.5,
-		0 
-	);
-	logoGroup.add (u);
+	shapes.forEach ((shape, index) => {
+		shape.position.set (
+			settings.tracking * index,
+			0, 
+			0
+		);
+		logoGroup.add (shape);
+	})
 }
 
 function buildControls () {
 	const gui = new GUI()
 	gui.add (settings, 'letter_size', 0, 1000)
-	gui.add (settings, 'logo_width', 0, 1000)
+	gui.add (settings, 'tracking', 0, 1000)
 }
 
 function onWindowResize () {
