@@ -11,21 +11,29 @@ let pointerXOnPointerDown = 0;
 let windowHalfX = window.innerWidth / 2;
 let logoTexture
 let shapes = [];
+let materials = [
+	new THREE.MeshBasicMaterial({
+		 color: 0xf0f0f0
+	}),
+	new THREE.MeshBasicMaterial({
+		 color: 0x000000
+	})
+]
 
 let settings = {
 	letter_size : 150,
 	tracking : 200,
-	corners : 0.75
+	corners : 0.75,
+	bevelSize: 0,
 };
 
 const extrudeSettings = {
-	steps: 2,
-	depth: 200,
+	steps: 1,
 	bevelEnabled: true,
 	bevelThickness: 1,
-	bevelSize: 1,
 	bevelOffset: 0,
-	bevelSegments: 1
+	bevelSegments: 1,
+	depth : 1000
 };
 
 buildScene ();
@@ -138,10 +146,10 @@ function getT () {
 			0 + offset
 		)
 	
-	let geometry = new THREE.ExtrudeGeometry (shape, extrudeSettings);
+	let geometry = new THREE.ExtrudeGeometry (shape, {...extrudeSettings, bevelSize: settings.bevelSize});
 	let mesh = new THREE.Mesh ( 
 		geometry, 
-		new THREE.MeshPhongMaterial ({side: THREE.DoubleSide, map: logoTexture}) 
+		materials
 	);
 
 	return mesh
@@ -149,7 +157,7 @@ function getT () {
 
 function getO () {
 	let radius = settings.letter_size * 0.5;
-	let segments = 32;
+	let segments = 64;
 	let theta, x, y
 	let theta_next, x_next, y_next, j;
 	let shape = new THREE.Shape()
@@ -166,17 +174,14 @@ function getO () {
 		shape.moveTo(0, 0);
 		shape.lineTo(x, y);
 		shape.lineTo(x_next, y_next);
-		shape.lineTo(0, 0);
 	}
 
-	let geometry = new THREE.ExtrudeGeometry (shape, extrudeSettings);
+	let geometry = new THREE.ExtrudeGeometry (shape, {...extrudeSettings, bevelSize: settings.bevelSize});
 	let mesh = new THREE.Mesh ( 
 		geometry, 
-		new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: logoTexture } ) 
+		materials
 	);
 	return mesh
-
-	return shape
 }
 
 function getR () {
@@ -205,10 +210,10 @@ function getR () {
 			0 + offset
 		)
 
-	let geometry = new THREE.ExtrudeGeometry (shape, extrudeSettings);
+	let geometry = new THREE.ExtrudeGeometry (shape, {...extrudeSettings, bevelSize: settings.bevelSize});
 	let mesh = new THREE.Mesh ( 
 		geometry, 
-		new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: logoTexture } ) 
+		materials
 	);
 	return mesh
 }
@@ -237,16 +242,17 @@ function getU () {
 			settings.letter_size - corner * 2 + offset, 0 + offset
 		)
 
-	let geometry = new THREE.ExtrudeGeometry (shape, extrudeSettings);
+	let geometry = new THREE.ExtrudeGeometry (shape, {...extrudeSettings, bevelSize: settings.bevelSize});
 	let mesh = new THREE.Mesh ( 
 		geometry, 
-		new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: logoTexture } ) 
+		materials
 	);
 
 	return mesh
 }
 
 function buildLogo () {
+
 	shapes.forEach (shape => {
 		logoGroup.remove (shape);
 	})
@@ -265,6 +271,7 @@ function buildControls () {
 	gui.add (settings, 'letter_size', 0, 400)
 	gui.add (settings, 'tracking', 0, 600)
 	gui.add (settings, 'corners', 0, 1)
+	gui.add (settings, 'bevelSize', 0, 6)
 }
 
 function onWindowResize () {
