@@ -13,7 +13,7 @@ let logoTexture
 let shapes = [];
 let materials = [
 	new THREE.MeshBasicMaterial({
-		 color: 0xf0f0f0
+		 color: 0x000000
 	}),
 	new THREE.MeshBasicMaterial({
 		 color: 0x000000
@@ -91,67 +91,35 @@ function getT () {
 	const middle = Math.min (settings.letter_size * corner_multiplier, settings.letter_size);
 	const corner = Math.max ((settings.letter_size - middle) * 0.5, 0);
 	const offset = settings.letter_size * -0.5;
+	const shape = new THREE.Shape ()
 
-	const shape = new THREE.Shape()
-		.moveTo (
-			corner + offset,
-			0 + offset
-		)
-		.lineTo (
-			corner + middle + offset, 
-			0 + offset
-		)
-		.lineTo (
-			corner + middle + offset, 
-			corner + offset
-		)
-		.lineTo (
-			settings.letter_size + offset,
-			corner + offset
-		)
-		.lineTo (
-			settings.letter_size + offset,
-			corner + middle + offset
-		)
-		.lineTo (
-			corner + middle + offset,
-			corner + middle + offset
-		)
-		.lineTo (
-			corner + middle + offset,
-			settings.letter_size + offset
-		)
-		.lineTo (
-			corner + offset,
-			settings.letter_size + offset
-		)
-		.lineTo (
-			corner + offset,
-			corner + middle + offset
-		)
-		.lineTo (
-			0 + offset,
-			corner + middle + offset
-		)
-		.lineTo (
-			0 + offset,
-			corner + offset
-		)
-		.lineTo (
-			corner + offset,
-			corner + offset
-		)
-		.moveTo (
-			corner + offset,
-			0 + offset
-		)
-	
-	let geometry = new THREE.ExtrudeGeometry (shape, {...extrudeSettings, bevelSize: settings.bevelSize});
+	const vectors = [
+		[corner, 0],
+		[corner + middle,  0],
+		[corner + middle, corner],
+		[settings.letter_size, corner],
+		[settings.letter_size, corner + middle],
+		[corner + middle, corner + middle],
+		[corner + middle, settings.letter_size],
+		[corner, settings.letter_size],
+		[corner, corner + middle],
+		[0, corner + middle],
+		[0, corner],
+		[corner, corner],
+		[corner, 0]
+	];
+
+	vectors.forEach ((vector, index) => {
+		if (index === 0) shape.moveTo (vector[0] + offset, vector[1] + offset);
+		else shape.lineTo (vector[0] + offset, vector[1] + offset);
+	})
+
+	let geometry = new THREE.ShapeGeometry (shape);
 	let mesh = new THREE.Mesh ( 
 		geometry, 
-		materials
+		new THREE.MeshPhongMaterial ({side: THREE.DoubleSide, map: logoTexture}) 
 	);
-
+	
 	return mesh
 }
 
@@ -260,7 +228,7 @@ function buildLogo () {
 		logoGroup.remove (shape);
 	})
 
-	shapes = [ getT (), getO (), getR (), getU ()]
+	shapes = [ getT ()] // , getO (), getR (), getU ()
 	const x_start = (shapes.length - 1) * settings.tracking * -0.5;
 
 	shapes.forEach ((shape, index) => {
