@@ -138,14 +138,33 @@ function getT () {
 }
 
 function getO () {
-	const geometry = new THREE.CircleGeometry (settings.letter_size * 0.5, 32); 
-	const mesh = new THREE.MeshPhongMaterial ({side: THREE.DoubleSide, map: logoTexture})
-	const shape = new THREE.Mesh (
-		geometry,
-		mesh
-	);
+	let radius = settings.letter_size * 0.5;
+	let segments = 32;
+	let theta, x, y
+	let theta_next, x_next, y_next, j;
+	let shape = new THREE.Shape()
 
-	return shape
+	for (let i = 0; i < segments; i++) {
+		theta = ((i + 1) / segments) * Math.PI * 2.0;
+		x = radius * Math.cos(theta);
+		y = radius * Math.sin(theta);
+		j = i + 2;
+		if( (j - 1) === segments ) j = 1;
+		theta_next = (j / segments) * Math.PI * 2.0;
+		x_next = radius * Math.cos(theta_next);
+		y_next = radius * Math.sin(theta_next);
+		shape.moveTo(0, 0);
+		shape.lineTo(x, y);
+		shape.lineTo(x_next, y_next);
+		shape.lineTo(0, 0);
+	}
+
+	let geometry = new THREE.ShapeGeometry (shape);
+	let mesh = new THREE.Mesh ( 
+		geometry, 
+		new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: logoTexture } ) 
+	);
+	return mesh
 }
 
 function getR () {
@@ -174,9 +193,9 @@ function getR () {
 			0 + offset
 		)
 
-	let rGeometry = new THREE.ShapeGeometry ( shape );
+	let geometry = new THREE.ShapeGeometry (shape);
 	let mesh = new THREE.Mesh ( 
-		rGeometry, 
+		geometry, 
 		new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: logoTexture } ) 
 	);
 	return mesh
