@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
-import { SVGRenderer } from 'three/addons/renderers/SVGRenderer.js';
 
 let container;
 let camera, scene, renderer;
@@ -321,30 +320,3 @@ function render() {
 
 	buildLogo ();
 }
-
-window.btnSVGExportClick = function () {
-	function ExportToSVG(rendererSVG, filename) {
-		var XMLS = new XMLSerializer();
-		var svgfile = XMLS.serializeToString(rendererSVG.domElement);
-		var svgData = svgfile;
-		var preface = '<?xml version="1.0" standalone="no"?>\r\n';
-		var svgBlob = new Blob([preface, svgData], {
-		  type: "image/svg+xml;charset=utf-8"
-		});
-		var svgUrl = URL.createObjectURL(svgBlob);
-		var downloadLink = document.createElement("a");
-		
-		downloadLink.href = svgUrl;
-		downloadLink.download = filename;
-		document.body.appendChild(downloadLink);
-		downloadLink.click();
-		document.body.removeChild(downloadLink);
-	 }
-	 
-	var rendererSVG = new SVGRenderer();
-	
-	rendererSVG.setSize(window.innerWidth, window.innerHeight);
-	rendererSVG.render(scene, camera);
-	ExportToSVG(rendererSVG, "logo.svg");
- }
- 
