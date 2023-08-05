@@ -18,17 +18,14 @@ let settings = {
 
 };
 
-init ();
+buildScene ();
+buildLogo ();
+buildControls ();
 animate ();
 
-function init () {
-
-	const u_corner = settings.letter_size * settings.u_ratio
-	const t_middle = settings.letter_size * settings.t_ratio;
-	const tCorner = (settings.letter_size - t_middle) * 0.5;
-
-	container = document.createElement ( 'div' );
-	document.body.appendChild ( container );
+function buildScene () {
+	container = document.createElement ('div');
+	document.body.appendChild (container);
 
 	scene = new THREE.Scene();
 	scene.background = new THREE.Color( 0xf0f0f0 );
@@ -42,16 +39,32 @@ function init () {
 	);
 
 	camera.position.set (0, 0, 1200);
-	scene.add( camera );
+	scene.add (camera);
 
-	const light = new THREE.PointLight( 0xffffff, 2.5, 0, 0 );
-	camera.add( light );
+	const light = new THREE.PointLight (0xffffff, 2.5, 0, 0);
+	camera.add (light);
 
-	group = new THREE.Group();
-	scene.add( group );
+	renderer = new THREE.WebGLRenderer( { antialias: true } );
+	renderer.setPixelRatio( window.devicePixelRatio );
+	renderer.setSize( window.innerWidth, window.innerHeight );
+	container.appendChild( renderer.domElement );
 
-	const loader = new THREE.TextureLoader();
-	const texture = loader.load( 'textures/uv_grid_opengl.jpg' );
+	container.style.touchAction = 'none';
+	container.addEventListener( 'pointerdown', onPointerDown );
+
+	window.addEventListener( 'resize', onWindowResize );
+}
+
+function buildLogo () {
+	const u_corner = settings.letter_size * settings.u_ratio
+	const t_middle = settings.letter_size * settings.t_ratio;
+	const tCorner = (settings.letter_size - t_middle) * 0.5;
+
+	group = new THREE.Group ();
+	scene.add (group);
+
+	const loader = new THREE.TextureLoader ();
+	const texture = loader.load ('textures/uv_grid_opengl.jpg');
 	texture.colorSpace = THREE.SRGBColorSpace;
 
 	texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
@@ -134,17 +147,9 @@ function init () {
 	uMesh.scale.set ( 1, 1, 1 );
 
 	group.add ( uMesh );
+}
 
-	renderer = new THREE.WebGLRenderer( { antialias: true } );
-	renderer.setPixelRatio( window.devicePixelRatio );
-	renderer.setSize( window.innerWidth, window.innerHeight );
-	container.appendChild( renderer.domElement );
-
-	container.style.touchAction = 'none';
-	container.addEventListener( 'pointerdown', onPointerDown );
-
-	window.addEventListener( 'resize', onWindowResize );
-
+function buildControls () {
 	const gui = new GUI()
 	gui.add (settings, 'letter_size', 0, 1000)
 	gui.add (settings, 'logo_width', 0, 1000)
@@ -189,4 +194,6 @@ function animate() {
 function render() {
 	group.rotation.y += ( targetRotation - group.rotation.y ) * 0.05;
 	renderer.render( scene, camera );
+
+	buildLogo ();
 }
