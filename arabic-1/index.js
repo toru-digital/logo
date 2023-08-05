@@ -11,20 +11,14 @@ let pointerXOnPointerDown = 0;
 let windowHalfX = window.innerWidth / 2;
 let logoTexture
 let shapes = [];
-let materials = [
-	new THREE.MeshBasicMaterial({
-		 color: 0xf0f0f0
-	}),
-	new THREE.MeshBasicMaterial({
-		 color: 0x000000
-	})
-]
 
 let settings = {
 	letter_size : 150,
 	tracking : 200,
 	corners : 0.75,
 	bevelSize: 0,
+	background_color : 0xf0f0f0,
+	foreground_color : 0x000000,
 };
 
 const extrudeSettings = {
@@ -46,8 +40,6 @@ function buildScene () {
 	document.body.appendChild (container);
 
 	scene = new THREE.Scene();
-	scene.background = new THREE.Color( 0xf0f0f0 );
-
 	camera = new THREE.OrthographicCamera
 	(
 		window.innerWidth / - 2, 
@@ -149,7 +141,10 @@ function getT () {
 	let geometry = new THREE.ExtrudeGeometry (shape, {...extrudeSettings, bevelSize: settings.bevelSize});
 	let mesh = new THREE.Mesh ( 
 		geometry, 
-		materials
+		[
+			new THREE.MeshBasicMaterial ({color: settings.background_color}),
+			new THREE.MeshBasicMaterial ({color: settings.foreground_color})
+		]
 	);
 
 	return mesh
@@ -182,7 +177,10 @@ function getO () {
 	let geometry = new THREE.ExtrudeGeometry (shape, {...extrudeSettings, bevelSize: settings.bevelSize});
 	let mesh = new THREE.Mesh ( 
 		geometry, 
-		materials
+		[
+			new THREE.MeshBasicMaterial ({color: settings.background_color}),
+			new THREE.MeshBasicMaterial ({color: settings.foreground_color})
+		]
 	);
 	return mesh
 }
@@ -216,7 +214,10 @@ function getR () {
 	let geometry = new THREE.ExtrudeGeometry (shape, {...extrudeSettings, bevelSize: settings.bevelSize});
 	let mesh = new THREE.Mesh ( 
 		geometry, 
-		materials
+		[
+			new THREE.MeshBasicMaterial ({color: settings.background_color}),
+			new THREE.MeshBasicMaterial ({color: settings.foreground_color})
+		]
 	);
 	return mesh
 }
@@ -248,7 +249,10 @@ function getU () {
 	let geometry = new THREE.ExtrudeGeometry (shape, {...extrudeSettings, bevelSize: settings.bevelSize});
 	let mesh = new THREE.Mesh ( 
 		geometry, 
-		materials
+		[
+			new THREE.MeshBasicMaterial ({color: settings.background_color}),
+			new THREE.MeshBasicMaterial ({color: settings.foreground_color})
+		]
 	);
 
 	return mesh
@@ -275,6 +279,8 @@ function buildControls () {
 	gui.add (settings, 'tracking', 0, 600)
 	gui.add (settings, 'corners', 0, 1)
 	gui.add (settings, 'bevelSize', 0, 6)
+	gui.addColor (settings, 'background_color')
+	gui.addColor (settings, 'foreground_color')
 }
 
 function onWindowResize () {
@@ -317,6 +323,8 @@ function render() {
 	logoGroup.rotation.x += ( targetRotation - logoGroup.rotation.x ) * 0.05;
 	logoGroup.rotation.y += ( targetRotation - logoGroup.rotation.y ) * 0.05;
 	renderer.render( scene, camera );
+
+	scene.background = new THREE.Color (settings.background_color);
 
 	buildLogo ();
 }

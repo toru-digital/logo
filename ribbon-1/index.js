@@ -15,7 +15,9 @@ let settings = {
 	letter_size : 150,
 	tracking : 200,
 	corners : 0.75,
-	depth : 500,
+	depth : 1000,
+	background_color : 0xf0f0f0,
+	foreground_color : 0x000000,
 };
 
 buildScene ();
@@ -28,7 +30,6 @@ function buildScene () {
 	document.body.appendChild (container);
 
 	scene = new THREE.Scene();
-	scene.background = new THREE.Color( 0x000000 );
 
 	camera = new THREE.OrthographicCamera
 	(
@@ -139,7 +140,7 @@ function getT () {
 
 	let mesh = new THREE.Mesh ( 
 		geometry, 
-		new THREE.MeshBasicMaterial ({side: THREE.DoubleSide, color: 0xFFFFFF}) 
+		new THREE.MeshBasicMaterial ({side: THREE.DoubleSide, color: settings.foreground_color}) 
 	);
 	
 	return mesh
@@ -175,7 +176,7 @@ function getO () {
 
 	let mesh = new THREE.Mesh ( 
 		geometry, 
-		new THREE.MeshBasicMaterial ({side: THREE.DoubleSide, color: 0xFFFFFF}) 
+		new THREE.MeshBasicMaterial ({side: THREE.DoubleSide, color: settings.foreground_color}) 
 	);
 	
 	return mesh
@@ -219,7 +220,7 @@ function getR () {
 
 	let mesh = new THREE.Mesh ( 
 		geometry, 
-		new THREE.MeshBasicMaterial ({side: THREE.DoubleSide, color: 0xFFFFFF}) 
+		new THREE.MeshBasicMaterial ({side: THREE.DoubleSide, color: settings.foreground_color}) 
 	);
 	
 	return mesh
@@ -290,7 +291,7 @@ function getU () {
 
 	let mesh = new THREE.Mesh ( 
 		geometry, 
-		new THREE.MeshBasicMaterial ({side: THREE.DoubleSide, color: 0xFFFFFF}) 
+		new THREE.MeshBasicMaterial ({side: THREE.DoubleSide, color: settings.foreground_color}) 
 	);
 
 	return mesh
@@ -316,7 +317,9 @@ function buildControls () {
 	gui.add (settings, 'letter_size', 0.1, 400)
 	gui.add (settings, 'tracking', 0, 600)
 	gui.add (settings, 'corners', 0, 1)
-	gui.add (settings, 'depth', 0, 500)
+	gui.addColor (settings, 'background_color')
+	gui.addColor (settings, 'foreground_color')
+	
 	
 }
 
@@ -360,6 +363,8 @@ function render() {
 	logoGroup.rotation.x += ( targetRotation - logoGroup.rotation.x ) * 0.05;
 	logoGroup.rotation.y += ( targetRotation - logoGroup.rotation.y ) * 0.05;
 	renderer.render( scene, camera );
+
+	scene.background = new THREE.Color( settings.background_color );
 
 	buildLogo ();
 }

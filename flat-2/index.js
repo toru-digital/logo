@@ -9,6 +9,7 @@ let targetRotationOnPointerDown = 0;
 let pointerX = 0;
 let pointerXOnPointerDown = 0;
 let windowHalfX = window.innerWidth / 2;
+let logoTexture
 let shapes = [];
 
 let settings = {
@@ -56,6 +57,13 @@ function buildScene () {
 
 	logoGroup = new THREE.Group ();
 	scene.add (logoGroup);
+
+	const loader = new THREE.TextureLoader ();
+	logoTexture = loader.load ('textures/uv_grid_opengl.jpg');
+	logoTexture.colorSpace = THREE.SRGBColorSpace;
+
+	logoTexture.wrapS = logoTexture.wrapT = THREE.RepeatWrapping;
+	logoTexture.repeat.set( 0.008, 0.008 );	
 }
 
 function getT () {
@@ -124,7 +132,7 @@ function getT () {
 	let geometry = new THREE.ShapeGeometry (shape);
 	let mesh = new THREE.Mesh ( 
 		geometry, 
-		new THREE.MeshBasicMaterial ({color: settings.foreground_color})
+		new THREE.MeshPhongMaterial ({side: THREE.DoubleSide, map: logoTexture}) 
 	);
 
 	return mesh
@@ -155,7 +163,7 @@ function getO () {
 	let geometry = new THREE.ShapeGeometry (shape);
 	let mesh = new THREE.Mesh ( 
 		geometry, 
-		new THREE.MeshBasicMaterial ({color: settings.foreground_color})
+		new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: logoTexture } ) 
 	);
 	return mesh
 }
@@ -189,7 +197,7 @@ function getR () {
 	let geometry = new THREE.ShapeGeometry (shape);
 	let mesh = new THREE.Mesh ( 
 		geometry, 
-		new THREE.MeshBasicMaterial ({color: settings.foreground_color})
+		new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: logoTexture } ) 
 	);
 	return mesh
 }
@@ -221,7 +229,7 @@ function getU () {
 	let geometry = new THREE.ShapeGeometry ( shape );
 	let mesh = new THREE.Mesh ( 
 		geometry, 
-		new THREE.MeshBasicMaterial ({color: settings.foreground_color})
+		new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: logoTexture } ) 
 	);
 
 	return mesh
@@ -246,8 +254,7 @@ function buildControls () {
 	gui.add (settings, 'letter_size', 0, 400)
 	gui.add (settings, 'tracking', 0, 600)
 	gui.add (settings, 'corners', 0, 1)
-	gui.addColor (settings, 'background_color')
-	gui.addColor (settings, 'foreground_color')
+	// gui.addColor (settings, 'background_color')
 }
 
 function onWindowResize () {
@@ -290,7 +297,7 @@ function render() {
 	logoGroup.rotation.y += ( targetRotation - logoGroup.rotation.y ) * 0.05;
 	renderer.render( scene, camera );
 
-	scene.background = new THREE.Color(settings.background_color);
+	// scene.background = new THREE.Color(settings.background_color);
 
 	buildLogo ();
 }
