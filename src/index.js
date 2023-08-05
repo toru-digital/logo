@@ -74,8 +74,6 @@ function getT () {
 	const corner = Math.max ((settings.letter_size - middle) * 0.5, 0);
 	const offset = settings.letter_size * -0.5;
 
-	console.log (corner_multiplier)
-
 	const shape = new THREE.Shape()
 		.moveTo (
 			corner + offset,
