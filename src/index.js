@@ -3,19 +3,19 @@ import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 
 let container;
 let camera, scene, renderer;
-let group;
+let logoGroup;
 let targetRotation = 0;
 let targetRotationOnPointerDown = 0;
 let pointerX = 0;
 let pointerXOnPointerDown = 0;
 let windowHalfX = window.innerWidth / 2;
+let logoTexture
 
 let settings = {
 	letter_size : 150,
 	logo_width : 800,
 	u_ratio: 0.15,
 	t_ratio: 0.4,
-
 };
 
 buildScene ();
@@ -53,100 +53,128 @@ function buildScene () {
 	container.addEventListener( 'pointerdown', onPointerDown );
 
 	window.addEventListener( 'resize', onWindowResize );
+
+	logoGroup = new THREE.Group ();
+	scene.add (logoGroup);
+
+	const loader = new THREE.TextureLoader ();
+	logoTexture = loader.load ('textures/uv_grid_opengl.jpg');
+	logoTexture.colorSpace = THREE.SRGBColorSpace;
+
+	logoTexture.wrapS = logoTexture.wrapT = THREE.RepeatWrapping;
+	logoTexture.repeat.set( 0.008, 0.008 );	
+}
+
+function getT () {
+	const middle = settings.letter_size * settings.t_ratio;
+	const corner = (settings.letter_size - middle) * 0.5;
+
+	const shape = new THREE.Shape()
+		.moveTo (corner, 0)
+		.lineTo (corner + middle, 0)
+		.lineTo (corner + middle, corner)
+		.lineTo (settings.letter_size, corner)
+		.lineTo (settings.letter_size, corner + middle)
+		.lineTo (corner + middle, corner + middle)
+		.lineTo (corner + middle, settings.letter_size)
+		.lineTo (corner, settings.letter_size)
+		.lineTo (corner, corner + middle)
+		.lineTo (0, corner + middle)
+		.lineTo (0, corner)
+		.lineTo (corner, corner)
+		.moveTo (corner, 0)
+	
+	let geometry = new THREE.ShapeGeometry (shape);
+	let mesh = new THREE.Mesh ( 
+		geometry, 
+		new THREE.MeshPhongMaterial ({side: THREE.DoubleSide, map: logoTexture}) 
+	);
+
+	return mesh
+}
+
+function getO () {
+	const geometry = new THREE.CircleGeometry ( settings.letter_size * 0.5, 32 ); 
+	const mesh = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: logoTexture } )
+	const shape = new THREE.Mesh (
+		geometry,
+		mesh
+	);
+
+	return shape
+}
+
+function getR () {
+	const size = settings.letter_size;
+	const shape = new THREE.Shape()
+		.moveTo (0, 0)
+		.lineTo (size, 0)
+		.lineTo (size, size)
+		.lineTo (0, size)
+		.lineTo (0, 0)
+
+	let rGeometry = new THREE.ShapeGeometry ( shape );
+	let mesh = new THREE.Mesh ( 
+		rGeometry, 
+		new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: logoTexture } ) 
+	);
+	return mesh
+}
+
+function getU () {
+	const corner = settings.letter_size * settings.u_ratio
+
+	const shape = new THREE.Shape()
+		.moveTo (settings.letter_size - corner * 2, 0)
+		.lineTo (corner * 2, 0)
+		.bezierCurveTo (0, 0, 0, corner * 2, 0, corner * 2)
+		.lineTo (0, settings.letter_size)
+		.lineTo (settings.letter_size, settings.letter_size)
+		.lineTo (settings.letter_size, corner * 2)
+		.bezierCurveTo (settings.letter_size, corner*2, settings.letter_size, 0, settings.letter_size - corner * 2, 0)
+
+	let geometry = new THREE.ShapeGeometry ( shape );
+	let mesh = new THREE.Mesh ( 
+		geometry, 
+		new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: logoTexture } ) 
+	);
+
+	return mesh
 }
 
 function buildLogo () {
-	const u_corner = settings.letter_size * settings.u_ratio
-	const t_middle = settings.letter_size * settings.t_ratio;
-	const tCorner = (settings.letter_size - t_middle) * 0.5;
 
-	group = new THREE.Group ();
-	scene.add (group);
-
-	const loader = new THREE.TextureLoader ();
-	const texture = loader.load ('textures/uv_grid_opengl.jpg');
-	texture.colorSpace = THREE.SRGBColorSpace;
-
-	texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-	texture.repeat.set( 0.008, 0.008 );	
-
-	const tShape = new THREE.Shape()
-		.moveTo (tCorner, 0)
-		.lineTo (tCorner + t_middle, 0)
-		.lineTo (tCorner + t_middle, tCorner)
-		.lineTo (settings.letter_size, tCorner)
-		.lineTo (settings.letter_size, tCorner + t_middle)
-		.lineTo (tCorner + t_middle, tCorner + t_middle)
-		.lineTo (tCorner + t_middle, settings.letter_size)
-		.lineTo (tCorner, settings.letter_size)
-		.lineTo (tCorner, tCorner + t_middle)
-		.lineTo (0, tCorner + t_middle)
-		.lineTo (0, tCorner)
-		.lineTo (tCorner, tCorner)
-		.moveTo (tCorner, 0)
-
-	let tGeometry = new THREE.ShapeGeometry ( tShape );
-	let mesh = new THREE.Mesh ( 
-		tGeometry, 
-		new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: texture } ) 
+	const t = getT ();
+	t.position.set (
+		settings.logo_width * -0.5 - settings.letter_size * 0.5,
+		settings.letter_size * -0.5, 
+		0
 	);
+	logoGroup.add (t);
 
-	mesh.position.set ( settings.logo_width * -0.5 - settings.letter_size*0.5, settings.letter_size * -0.5, 0 );
-	mesh.rotation.set (0, 0, 0);
-	mesh.scale.set ( 1, 1, 1 );
-
-	group.add ( mesh );
-	
-	const geometry = new THREE.CircleGeometry ( settings.letter_size * 0.5, 32 ); 
-	const oMesh = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: texture } )
-	const oShape = new THREE.Mesh (
-		geometry,
-		oMesh
+	const o = getO ();
+	o.position.set (
+		settings.logo_width * -0.5 + (settings.logo_width / 3) , 
+		0, 
+		0
 	);
+	logoGroup.add (o);
 
-	oShape.position.set (settings.logo_width * -0.5 + (settings.logo_width / 3) , 0, 0);
-	group.add( oShape );
-
-	const rSize = settings.letter_size;
-	const rShape = new THREE.Shape()
-		.moveTo (0, 0)
-		.lineTo (rSize, 0)
-		.lineTo (rSize, rSize)
-		.lineTo (0, rSize)
-		.lineTo (0, 0)
-
-	let rGeometry = new THREE.ShapeGeometry ( rShape );
-	let rMesh = new THREE.Mesh ( 
-		rGeometry, 
-		new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: texture } ) 
+	const r = getR ();
+	r.position.set (
+		settings.logo_width * -0.5 + (settings.logo_width / 3) * 2  - settings.letter_size*0.5,
+		settings.letter_size * -0.5, 
+		0 
 	);
+	logoGroup.add (r);
 
-	rMesh.position.set ( settings.logo_width * -0.5 + (settings.logo_width / 3) * 2  - settings.letter_size*0.5, settings.letter_size * -0.5, 0 );
-	rMesh.rotation.set (0, 0, 0);
-	rMesh.scale.set ( 1, 1, 1 );
-
-	group.add ( rMesh );
-
-	const uShape = new THREE.Shape()
-		.moveTo (settings.letter_size - u_corner * 2, 0)
-		.lineTo (u_corner * 2, 0)
-		.bezierCurveTo (0, 0, 0, u_corner * 2, 0, u_corner * 2)
-		.lineTo (0, settings.letter_size)
-		.lineTo (settings.letter_size, settings.letter_size)
-		.lineTo (settings.letter_size, u_corner * 2)
-		.bezierCurveTo (settings.letter_size, u_corner*2, settings.letter_size, 0, settings.letter_size - u_corner * 2, 0)
-
-	let uGeometry = new THREE.ShapeGeometry ( uShape );
-	let uMesh = new THREE.Mesh ( 
-		uGeometry, 
-		new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: texture } ) 
+	const u = getU ();
+	u.position.set (
+		settings.logo_width * -0.5 + (settings.logo_width / 3) * 3  - settings.letter_size*0.5,
+		settings.letter_size * -0.5,
+		0 
 	);
-
-	uMesh.position.set ( settings.logo_width * -0.5 + (settings.logo_width / 3) * 3  - settings.letter_size*0.5, settings.letter_size * -0.5, 0 );
-	uMesh.rotation.set (0, 0, 0);
-	uMesh.scale.set ( 1, 1, 1 );
-
-	group.add ( uMesh );
+	logoGroup.add (u);
 }
 
 function buildControls () {
@@ -192,7 +220,7 @@ function animate() {
 }
 
 function render() {
-	group.rotation.y += ( targetRotation - group.rotation.y ) * 0.05;
+	logoGroup.rotation.y += ( targetRotation - logoGroup.rotation.y ) * 0.05;
 	renderer.render( scene, camera );
 
 	buildLogo ();
