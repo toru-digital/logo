@@ -18,3 +18,6 @@ npx vite build;
 npx vite preview;
 ```
 
+Push to the main branch and Github pages will build & deploy to 
+
+https://toru-digital.github.io/logo/
