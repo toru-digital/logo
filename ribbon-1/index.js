@@ -58,6 +58,40 @@ function buildScene () {
 	scene.add (logoGroup);	
 }
 
+function getCircle (radius, offset_x, offset_y, start, end) {
+	let segments = 64;
+	let theta, x1, y1
+	let theta_next, x2, y2, j;
+	let arr = []
+
+	const start_index = segments * start;
+	const end_index = segments * end;
+
+	function getPoints (i) {
+		theta = ((i + 1) / segments) * Math.PI * 2.0;
+		x1 = radius * Math.cos(theta) + offset_x;
+		y1 = radius * Math.sin(theta) + offset_y;
+		j = i + 2;
+		if( (j - 1) === segments ) j = 1;
+		theta_next = (j / segments) * Math.PI * 2.0;
+		x2 = radius * Math.cos(theta_next) + offset_x;
+		y2 = radius * Math.sin(theta_next) + offset_y;
+		return [x1, y1], [x2, y2]
+	}
+
+	if (start < end) {
+		for (let i = start_index; i < end_index; i++) {
+			arr.push (getPoints(i));
+		}
+	} else {
+		for (let i = start_index-1; i >= end_index; i--) {
+			arr.push (getPoints(i));
+		}
+	}
+
+	return arr;
+}
+
 function getT () {
 	const corner_multiplier = 0.4 + 0.6 * (1-settings.corners);
 
@@ -114,31 +148,24 @@ function getT () {
 
 function getO () {
 	let radius = settings.letter_size * 0.5;
-	let segments = 64;
-	let theta, x1, y1
-	let theta_next, x2, y2, j;
+	let vertices_2d = getCircle (radius, 0, 0, 0, 1);
+
 	let vertices_3d = [];
 
-	for (let i = 0; i < segments; i++) {
-		theta = ((i + 1) / segments) * Math.PI * 2.0;
-		x1 = radius * Math.cos(theta);
-		y1 = radius * Math.sin(theta);
-		j = i + 2;
-		if( (j - 1) === segments ) j = 1;
-		theta_next = (j / segments) * Math.PI * 2.0;
-		x2 = radius * Math.cos(theta_next);
-		y2 = radius * Math.sin(theta_next);
+	vertices_2d.forEach ((v, index) => {
+		const v1 = v;
+		const v2 = vertices_2d [(index + 1) % vertices_2d.length];
 
 		vertices_3d = vertices_3d.concat ([
-			x1, y1, 0,
-			x2, y2, 0,
-			x2, y2, -1*settings.depth,
+			v1[0] , v1[1] , 0,
+			v2[0] , v2[1] , 0,
+			v2[0] , v2[1] , -1*settings.depth,
 
-			x2, y2, -1*settings.depth,
-			x1, y1, -1*settings.depth,
-			x1, y1, 0
+			v2[0] , v2[1] , -1*settings.depth,
+			v1[0] , v1[1] , -1*settings.depth,
+			v1[0] , v1[1] , 0
 		])
-	}
+	})
 
 	const geometry = new THREE.BufferGeometry();
 	
@@ -211,14 +238,29 @@ function getU () {
 		[settings.letter_size, corner],
 	];
 
+	vertices_2d = vertices_2d.concat (
+		getCircle (
+			corner, 
+			settings.letter_size - corner, 
+			corner,
+			1,
+			0.75
+		)
+	)
+
 	vertices_2d = vertices_2d.concat ([
 		[settings.letter_size - corner, 0]
 	])
 
-	vertices_2d = vertices_2d.concat ([
-		[corner, 0],
-		[0, corner]
-	])
+	vertices_2d = vertices_2d.concat (
+		getCircle (
+			corner, 
+			corner, 
+			corner,
+			0.75,
+			0.5
+		)
+	)
 
 	let vertices_3d = [];
 
