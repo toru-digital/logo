@@ -2,6 +2,8 @@
 
 playing with new logo ideas
 
+https://toru-digital.github.io/logo/
+
 ## Usage
 
 ```bash
@@ -18,6 +20,5 @@ npx vite build;
 npx vite preview;
 ```
 
-Push to the main branch and Github pages will build & deploy to 
+Push to the main branch, Github pages will depoloy automatically
 
-https://toru-digital.github.io/logo/
