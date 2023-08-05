@@ -206,13 +206,13 @@ function getU () {
 	const offset = settings.letter_size * -0.5;
 
 	const vertices_2d = [
-		[settings.letter_size - corner * 2, 0],
-		[corner * 2, 0],
-		[0, 0], 
 		[0, settings.letter_size],
 		[settings.letter_size, settings.letter_size],
-		[settings.letter_size, corner * 2],
-		[settings.letter_size, corner*2]
+		[settings.letter_size, corner],
+		[settings.letter_size - corner, 0],
+		[corner, 0],
+		[0, corner],
+		
 	];
 
 	let vertices_3d = [];
