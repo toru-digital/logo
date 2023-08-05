@@ -31,12 +31,14 @@ function buildScene () {
 	scene = new THREE.Scene();
 	scene.background = new THREE.Color( 0xf0f0f0 );
 
-	camera = new THREE.PerspectiveCamera
+	camera = new THREE.OrthographicCamera
 	(
-		50, 
-		window.innerWidth / window.innerHeight, 
-		1,
-		4000 
+		window.innerWidth / - 2, 
+		window.innerWidth / 2, 
+		window.innerHeight / 2, 
+		window.innerHeight / - 2,
+		1, 
+		10000
 	);
 
 	camera.position.set (0, 0, 1200);
@@ -56,14 +58,7 @@ function buildScene () {
 	window.addEventListener( 'resize', onWindowResize );
 
 	logoGroup = new THREE.Group ();
-	scene.add (logoGroup);
-
-	const loader = new THREE.TextureLoader ();
-	logoTexture = loader.load ('textures/uv_grid_opengl.jpg');
-	logoTexture.colorSpace = THREE.SRGBColorSpace;
-
-	logoTexture.wrapS = logoTexture.wrapT = THREE.RepeatWrapping;
-	logoTexture.repeat.set( 0.008, 0.008 );	
+	scene.add (logoGroup);	
 }
 
 function getT () {
@@ -94,21 +89,15 @@ function getT () {
 		const v1 = v;
 		const v2 = vertices_2d [(index + 1) % vertices_2d.length];
 
-		vertices_3d.concat ([v1[0] + offset, v1[1] + offset, 0])
-		vertices_3d.concat ([v2[0] + offset, v2[1] + offset, 0])
-		vertices_3d.concat ([v2[0] + offset, v2[1] + offset, settings.depth])
+		vertices_3d = vertices_3d.concat ([
+			v1[0] + offset, v1[1] + offset, 0,
+			v2[0] + offset, v2[1] + offset, 0,
+			v2[0] + offset, v2[1] + offset, -1*settings.depth,
 
-		vertices_3d.concat ([v2[0] + offset, v2[1] + offset, settings.depth])
-		vertices_3d.concat ([v1[0] + offset, v1[1] + offset, settings.depth])
-		vertices_3d.concat ([v1[0] + offset, v1[1] + offset, 0])
-
-		// shape.moveTo ();
-		// shape.moveTo ();
-		// shape.lineTo ();
-		// shape.moveTo (v1[0] + offset, v1[1] + offset);
-
-		// if (index === 0) 
-		// else shape.lineTo (vector[0] + offset, vector[1] + offset);
+			v2[0] + offset, v2[1] + offset, -1*settings.depth,
+			v1[0] + offset, v1[1] + offset, -1*settings.depth,
+			v1[0] + offset, v1[1] + offset, 0
+		])
 	})
 
 	const geometry = new THREE.BufferGeometry();
@@ -119,7 +108,7 @@ function getT () {
 
 	let mesh = new THREE.Mesh ( 
 		geometry, 
-		new THREE.MeshPhongMaterial ({side: THREE.DoubleSide, map: logoTexture}) 
+		new THREE.MeshBasicMaterial ({side: THREE.DoubleSide, color: 0xFF00FF}) 
 	);
 	
 	return mesh
@@ -154,7 +143,7 @@ function getR () {
 	let geometry = new THREE.ShapeGeometry (shape);
 	let mesh = new THREE.Mesh ( 
 		geometry, 
-		new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: logoTexture } ) 
+		new THREE.MeshBasicMaterial ({side: THREE.DoubleSide, color: 0x000000}) 
 	);
 	return mesh
 }
