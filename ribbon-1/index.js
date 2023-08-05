@@ -205,15 +205,20 @@ function getU () {
 	const corner = Math.min (settings.letter_size * corner_multiplier, settings.letter_size * 0.25)
 	const offset = settings.letter_size * -0.5;
 
-	const vertices_2d = [
+	let vertices_2d = [
 		[0, settings.letter_size],
 		[settings.letter_size, settings.letter_size],
 		[settings.letter_size, corner],
-		[settings.letter_size - corner, 0],
-		[corner, 0],
-		[0, corner],
-		
 	];
+
+	vertices_2d = vertices_2d.concat ([
+		[settings.letter_size - corner, 0]
+	])
+
+	vertices_2d = vertices_2d.concat ([
+		[corner, 0],
+		[0, corner]
+	])
 
 	let vertices_3d = [];
 
