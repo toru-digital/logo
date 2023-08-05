@@ -44,9 +44,6 @@ function buildScene () {
 	camera.position.set (0, 0, 1200);
 	scene.add (camera);
 
-	const light = new THREE.PointLight (0xffffff, 2.5, 0, 0);
-	camera.add (light);
-
 	renderer = new THREE.WebGLRenderer( { antialias: true } );
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( window.innerWidth, window.innerHeight );
@@ -101,6 +98,7 @@ function getT () {
 	})
 
 	const geometry = new THREE.BufferGeometry();
+
 	geometry.setAttribute (
 		'position', 
 		new THREE.BufferAttribute (new Float32Array (vertices_3d), 3) 
@@ -114,37 +112,46 @@ function getT () {
 	return mesh
 }
 
-function getR () {
-	const offset = settings.letter_size * -0.5;
+function getO () {
+	let radius = settings.letter_size * 0.5;
+	let segments = 64;
+	let theta, x1, y1
+	let theta_next, x2, y2, j;
+	let vertices_3d = [];
 
-	const size = settings.letter_size;
-	const shape = new THREE.Shape()
-		.moveTo (
-			0 + offset, 
-			0 + offset
-		)
-		.lineTo (
-			size + offset, 
-			0 + offset
-		)
-		.lineTo (
-			size + offset, 
-			size + offset
-		)
-		.lineTo (
-			0 + offset, 
-			size + offset
-		)
-		.lineTo (
-			0 + offset, 
-			0 + offset
-		)
+	for (let i = 0; i < segments; i++) {
+		theta = ((i + 1) / segments) * Math.PI * 2.0;
+		x1 = radius * Math.cos(theta);
+		y1 = radius * Math.sin(theta);
+		j = i + 2;
+		if( (j - 1) === segments ) j = 1;
+		theta_next = (j / segments) * Math.PI * 2.0;
+		x2 = radius * Math.cos(theta_next);
+		y2 = radius * Math.sin(theta_next);
 
-	let geometry = new THREE.ShapeGeometry (shape);
+		vertices_3d = vertices_3d.concat ([
+			x1, y1, 0,
+			x2, y2, 0,
+			x2, y2, -1*settings.depth,
+
+			x2, y2, -1*settings.depth,
+			x1, y1, -1*settings.depth,
+			x1, y1, 0
+		])
+	}
+
+	const geometry = new THREE.BufferGeometry();
+	
+	geometry.setAttribute (
+		'position', 
+		new THREE.BufferAttribute (new Float32Array (vertices_3d), 3) 
+	);
+
 	let mesh = new THREE.Mesh ( 
 		geometry, 
-		new THREE.MeshBasicMaterial ({side: THREE.DoubleSide, color: 0x000000}) 
+		new THREE.MeshBasicMaterial ({side: THREE.DoubleSide, color: 0xFF00FF}) 
 	);
+	
 	return mesh
 }
 
@@ -154,7 +161,7 @@ function buildLogo () {
 		logoGroup.remove (shape);
 	})
 
-	shapes = [ getT (), getR ()] // , getO (), , getU ()
+	shapes = [ getT (), getO ()]
 	const x_start = (shapes.length - 1) * settings.tracking * -0.5;
 
 	shapes.forEach ((shape, index) => {
