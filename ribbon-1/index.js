@@ -31,14 +31,12 @@ function buildScene () {
 	scene = new THREE.Scene();
 	scene.background = new THREE.Color( 0xf0f0f0 );
 
-	camera = new THREE.OrthographicCamera
+	camera = new THREE.PerspectiveCamera
 	(
-		window.innerWidth / - 2, 
-		window.innerWidth / 2, 
-		window.innerHeight / 2, 
-		window.innerHeight / - 2,
-		1, 
-		10000
+		50, 
+		window.innerWidth / window.innerHeight, 
+		1,
+		4000 
 	);
 
 	camera.position.set (0, 0, 1200);
@@ -74,9 +72,8 @@ function getT () {
 	const middle = Math.min (settings.letter_size * corner_multiplier, settings.letter_size);
 	const corner = Math.max ((settings.letter_size - middle) * 0.5, 0);
 	const offset = settings.letter_size * -0.5;
-	const shape = new THREE.Shape ()
 
-	const vectors = [
+	const vertices_2d = [
 		[corner, 0],
 		[corner + middle,  0],
 		[corner + middle, corner],
@@ -88,21 +85,77 @@ function getT () {
 		[corner, corner + middle],
 		[0, corner + middle],
 		[0, corner],
-		[corner, corner],
-		[corner, 0]
+		[corner, corner]
 	];
 
-	vectors.forEach ((vector, index) => {
-		if (index === 0) shape.moveTo (vector[0] + offset, vector[1] + offset);
-		else shape.lineTo (vector[0] + offset, vector[1] + offset);
+	let vertices_3d = [];
+
+	vertices_2d.forEach ((v, index) => {
+		const v1 = v;
+		const v2 = vertices_2d [(index + 1) % vertices_2d.length];
+
+		vertices_3d.concat ([v1[0] + offset, v1[1] + offset, 0])
+		vertices_3d.concat ([v2[0] + offset, v2[1] + offset, 0])
+		vertices_3d.concat ([v2[0] + offset, v2[1] + offset, settings.depth])
+
+		vertices_3d.concat ([v2[0] + offset, v2[1] + offset, settings.depth])
+		vertices_3d.concat ([v1[0] + offset, v1[1] + offset, settings.depth])
+		vertices_3d.concat ([v1[0] + offset, v1[1] + offset, 0])
+
+		// shape.moveTo ();
+		// shape.moveTo ();
+		// shape.lineTo ();
+		// shape.moveTo (v1[0] + offset, v1[1] + offset);
+
+		// if (index === 0) 
+		// else shape.lineTo (vector[0] + offset, vector[1] + offset);
 	})
 
-	let geometry = new THREE.ShapeGeometry (shape);
+	const geometry = new THREE.BufferGeometry();
+	geometry.setAttribute (
+		'position', 
+		new THREE.BufferAttribute (new Float32Array (vertices_3d), 3) 
+	);
+
 	let mesh = new THREE.Mesh ( 
 		geometry, 
 		new THREE.MeshPhongMaterial ({side: THREE.DoubleSide, map: logoTexture}) 
 	);
 	
+	return mesh
+}
+
+function getR () {
+	const offset = settings.letter_size * -0.5;
+
+	const size = settings.letter_size;
+	const shape = new THREE.Shape()
+		.moveTo (
+			0 + offset, 
+			0 + offset
+		)
+		.lineTo (
+			size + offset, 
+			0 + offset
+		)
+		.lineTo (
+			size + offset, 
+			size + offset
+		)
+		.lineTo (
+			0 + offset, 
+			size + offset
+		)
+		.lineTo (
+			0 + offset, 
+			0 + offset
+		)
+
+	let geometry = new THREE.ShapeGeometry (shape);
+	let mesh = new THREE.Mesh ( 
+		geometry, 
+		new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: logoTexture } ) 
+	);
 	return mesh
 }
 
@@ -112,7 +165,7 @@ function buildLogo () {
 		logoGroup.remove (shape);
 	})
 
-	shapes = [ getT ()] // , getO (), getR (), getU ()
+	shapes = [ getT (), getR ()] // , getO (), , getU ()
 	const x_start = (shapes.length - 1) * settings.tracking * -0.5;
 
 	shapes.forEach ((shape, index) => {
