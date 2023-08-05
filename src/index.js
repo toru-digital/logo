@@ -15,7 +15,7 @@ let shapes = [];
 let settings = {
 	letter_size : 150,
 	tracking : 200,
-	corners : 0.5
+	corners : 0.75
 };
 
 buildScene ();
@@ -66,9 +66,15 @@ function buildScene () {
 }
 
 function getT () {
-	const middle = Math.min (settings.letter_size * settings.corners * 0.4, settings.letter_size);
+	// const corner_multiplier = settings.corners * -1 // explore this
+	// const corner_multiplier = Math.max ((settings.corners * 1.1) - 0.1, 0) // and this
+	const corner_multiplier = 0.4 + 0.6 * (1-settings.corners);
+
+	const middle = Math.min (settings.letter_size * corner_multiplier, settings.letter_size);
 	const corner = Math.max ((settings.letter_size - middle) * 0.5, 0);
 	const offset = settings.letter_size * -0.5;
+
+	console.log (corner_multiplier)
 
 	const shape = new THREE.Shape()
 		.moveTo (
@@ -179,7 +185,10 @@ function getR () {
 }
 
 function getU () {
-	const corner = Math.min (settings.letter_size * settings.corners * 0.15, settings.letter_size * 0.25)
+
+	const corner_multiplier = settings.corners * 0.3
+
+	const corner = Math.min (settings.letter_size * corner_multiplier, settings.letter_size * 0.25)
 	const offset = settings.letter_size * -0.5;
 
 	const shape = new THREE.Shape()
