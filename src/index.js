@@ -15,10 +15,10 @@ let controlObject = {
 	logo_width : 800
 };
 
-init();
-animate();
+init ();
+animate ();
 
-function init() {
+function init () {
 
 	const uRatio = 0.15;
 	const tRatio = 0.4;
@@ -34,8 +34,15 @@ function init() {
 	scene = new THREE.Scene();
 	scene.background = new THREE.Color( 0xf0f0f0 );
 
-	camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 1000 );
-	camera.position.set( 0, 0, 800 );
+	camera = new THREE.PerspectiveCamera
+	(
+		50, 
+		window.innerWidth / window.innerHeight, 
+		1,
+		4000 
+	);
+
+	camera.position.set (0, 0, 1200);
 	scene.add( camera );
 
 	const light = new THREE.PointLight( 0xffffff, 2.5, 0, 0 );
@@ -144,17 +151,14 @@ function init() {
 	gui.add (controlObject, 'logo_width', 0, 1000)
 }
 
-function onWindowResize() {
-
+function onWindowResize () {
 	windowHalfX = window.innerWidth / 2;
-
 	camera.aspect = window.innerWidth / window.innerHeight;
-	camera.updateProjectionMatrix();
-
+	camera.updateProjectionMatrix ();
 	renderer.setSize( window.innerWidth, window.innerHeight );
 }
 
-function onPointerDown( event ) {
+function onPointerDown (event) {
 
 	if ( event.isPrimary === false ) return;
 
@@ -166,35 +170,24 @@ function onPointerDown( event ) {
 
 }
 
-function onPointerMove( event ) {
-
+function onPointerMove (event) {
 	if ( event.isPrimary === false ) return;
-
 	pointerX = event.clientX - windowHalfX;
-
 	targetRotation = targetRotationOnPointerDown + ( pointerX - pointerXOnPointerDown ) * 0.02;
-
 }
 
 function onPointerUp() {
 	if ( event.isPrimary === false ) return;
-
 	document.removeEventListener( 'pointermove', onPointerMove );
 	document.removeEventListener( 'pointerup', onPointerUp );
 }
 
 function animate() {
-
 	requestAnimationFrame( animate );
-
 	render();
-
 }
 
 function render() {
-
 	group.rotation.y += ( targetRotation - group.rotation.y ) * 0.05;
 	renderer.render( scene, camera );
-
 }
-
