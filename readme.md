@@ -5,7 +5,7 @@ playing with new logo ideas
 ## Usage
 
 ```bash
-nvm use 16;
+nvm use 18;
 npm i;
 npx vite serve;
 ```
