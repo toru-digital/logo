@@ -155,13 +155,57 @@ function getO () {
 	return mesh
 }
 
+function getR () {
+	const offset = settings.letter_size * -0.5;
+	const size = settings.letter_size;
+
+	const vertices_2d = [
+		[0, 0],
+		[size, 0],
+		[size, size],
+		[0, size],
+		[0, 0]
+	];
+	
+	let vertices_3d = [];
+
+	vertices_2d.forEach ((v, index) => {
+		const v1 = v;
+		const v2 = vertices_2d [(index + 1) % vertices_2d.length];
+
+		vertices_3d = vertices_3d.concat ([
+			v1[0] + offset, v1[1] + offset, 0,
+			v2[0] + offset, v2[1] + offset, 0,
+			v2[0] + offset, v2[1] + offset, -1*settings.depth,
+
+			v2[0] + offset, v2[1] + offset, -1*settings.depth,
+			v1[0] + offset, v1[1] + offset, -1*settings.depth,
+			v1[0] + offset, v1[1] + offset, 0
+		])
+	})
+
+	const geometry = new THREE.BufferGeometry();
+
+	geometry.setAttribute (
+		'position', 
+		new THREE.BufferAttribute (new Float32Array (vertices_3d), 3) 
+	);
+
+	let mesh = new THREE.Mesh ( 
+		geometry, 
+		new THREE.MeshBasicMaterial ({side: THREE.DoubleSide, color: 0xFF00FF}) 
+	);
+	
+	return mesh
+}
+
 function buildLogo () {
 
 	shapes.forEach (shape => {
 		logoGroup.remove (shape);
 	})
 
-	shapes = [ getT (), getO ()]
+	shapes = [ getT (), getO (), getR ()]
 	const x_start = (shapes.length - 1) * settings.tracking * -0.5;
 
 	shapes.forEach ((shape, index) => {
