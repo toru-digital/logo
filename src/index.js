@@ -10,9 +10,12 @@ let pointerX = 0;
 let pointerXOnPointerDown = 0;
 let windowHalfX = window.innerWidth / 2;
 
-let controlObject = {
+let settings = {
 	letter_size : 150,
-	logo_width : 800
+	logo_width : 800,
+	u_ratio: 0.15,
+	t_ratio: 0.4,
+
 };
 
 init ();
@@ -20,13 +23,9 @@ animate ();
 
 function init () {
 
-	const uRatio = 0.15;
-	const tRatio = 0.4;
-
-	const uCorner = controlObject.letter_size * uRatio
-	const tMiddle = controlObject.letter_size * tRatio;
-
-	const tCorner = (controlObject.letter_size - tMiddle) * 0.5;
+	const u_corner = settings.letter_size * settings.u_ratio
+	const t_middle = settings.letter_size * settings.t_ratio;
+	const tCorner = (settings.letter_size - t_middle) * 0.5;
 
 	container = document.createElement ( 'div' );
 	document.body.appendChild ( container );
@@ -60,15 +59,15 @@ function init () {
 
 	const tShape = new THREE.Shape()
 		.moveTo (tCorner, 0)
-		.lineTo (tCorner + tMiddle, 0)
-		.lineTo (tCorner + tMiddle, tCorner)
-		.lineTo (controlObject.letter_size, tCorner)
-		.lineTo (controlObject.letter_size, tCorner + tMiddle)
-		.lineTo (tCorner + tMiddle, tCorner + tMiddle)
-		.lineTo (tCorner + tMiddle, controlObject.letter_size)
-		.lineTo (tCorner, controlObject.letter_size)
-		.lineTo (tCorner, tCorner + tMiddle)
-		.lineTo (0, tCorner + tMiddle)
+		.lineTo (tCorner + t_middle, 0)
+		.lineTo (tCorner + t_middle, tCorner)
+		.lineTo (settings.letter_size, tCorner)
+		.lineTo (settings.letter_size, tCorner + t_middle)
+		.lineTo (tCorner + t_middle, tCorner + t_middle)
+		.lineTo (tCorner + t_middle, settings.letter_size)
+		.lineTo (tCorner, settings.letter_size)
+		.lineTo (tCorner, tCorner + t_middle)
+		.lineTo (0, tCorner + t_middle)
 		.lineTo (0, tCorner)
 		.lineTo (tCorner, tCorner)
 		.moveTo (tCorner, 0)
@@ -79,23 +78,23 @@ function init () {
 		new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: texture } ) 
 	);
 
-	mesh.position.set ( controlObject.logo_width * -0.5 - controlObject.letter_size*0.5, controlObject.letter_size * -0.5, 0 );
+	mesh.position.set ( settings.logo_width * -0.5 - settings.letter_size*0.5, settings.letter_size * -0.5, 0 );
 	mesh.rotation.set (0, 0, 0);
 	mesh.scale.set ( 1, 1, 1 );
 
 	group.add ( mesh );
 	
-	const geometry = new THREE.CircleGeometry ( controlObject.letter_size * 0.5, 32 ); 
+	const geometry = new THREE.CircleGeometry ( settings.letter_size * 0.5, 32 ); 
 	const oMesh = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: texture } )
 	const oShape = new THREE.Mesh (
 		geometry,
 		oMesh
 	);
 
-	oShape.position.set (controlObject.logo_width * -0.5 + (controlObject.logo_width / 3) , 0, 0);
+	oShape.position.set (settings.logo_width * -0.5 + (settings.logo_width / 3) , 0, 0);
 	group.add( oShape );
 
-	const rSize = controlObject.letter_size;
+	const rSize = settings.letter_size;
 	const rShape = new THREE.Shape()
 		.moveTo (0, 0)
 		.lineTo (rSize, 0)
@@ -109,20 +108,20 @@ function init () {
 		new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: texture } ) 
 	);
 
-	rMesh.position.set ( controlObject.logo_width * -0.5 + (controlObject.logo_width / 3) * 2  - controlObject.letter_size*0.5, controlObject.letter_size * -0.5, 0 );
+	rMesh.position.set ( settings.logo_width * -0.5 + (settings.logo_width / 3) * 2  - settings.letter_size*0.5, settings.letter_size * -0.5, 0 );
 	rMesh.rotation.set (0, 0, 0);
 	rMesh.scale.set ( 1, 1, 1 );
 
 	group.add ( rMesh );
 
 	const uShape = new THREE.Shape()
-		.moveTo (controlObject.letter_size - uCorner * 2, 0)
-		.lineTo (uCorner * 2, 0)
-		.bezierCurveTo (0, 0, 0, uCorner * 2, 0, uCorner * 2)
-		.lineTo (0, controlObject.letter_size)
-		.lineTo (controlObject.letter_size, controlObject.letter_size)
-		.lineTo (controlObject.letter_size, uCorner * 2)
-		.bezierCurveTo (controlObject.letter_size, uCorner*2, controlObject.letter_size, 0, controlObject.letter_size - uCorner * 2, 0)
+		.moveTo (settings.letter_size - u_corner * 2, 0)
+		.lineTo (u_corner * 2, 0)
+		.bezierCurveTo (0, 0, 0, u_corner * 2, 0, u_corner * 2)
+		.lineTo (0, settings.letter_size)
+		.lineTo (settings.letter_size, settings.letter_size)
+		.lineTo (settings.letter_size, u_corner * 2)
+		.bezierCurveTo (settings.letter_size, u_corner*2, settings.letter_size, 0, settings.letter_size - u_corner * 2, 0)
 
 	let uGeometry = new THREE.ShapeGeometry ( uShape );
 	let uMesh = new THREE.Mesh ( 
@@ -130,7 +129,7 @@ function init () {
 		new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: texture } ) 
 	);
 
-	uMesh.position.set ( controlObject.logo_width * -0.5 + (controlObject.logo_width / 3) * 3  - controlObject.letter_size*0.5, controlObject.letter_size * -0.5, 0 );
+	uMesh.position.set ( settings.logo_width * -0.5 + (settings.logo_width / 3) * 3  - settings.letter_size*0.5, settings.letter_size * -0.5, 0 );
 	uMesh.rotation.set (0, 0, 0);
 	uMesh.scale.set ( 1, 1, 1 );
 
@@ -147,8 +146,8 @@ function init () {
 	window.addEventListener( 'resize', onWindowResize );
 
 	const gui = new GUI()
-	gui.add (controlObject, 'letter_size', 0, 1000)
-	gui.add (controlObject, 'logo_width', 0, 1000)
+	gui.add (settings, 'letter_size', 0, 1000)
+	gui.add (settings, 'logo_width', 0, 1000)
 }
 
 function onWindowResize () {
