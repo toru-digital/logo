@@ -210,13 +210,10 @@ function getU () {
 
 function buildLogo () {
 	const shapes = [ getT (), getO (), getR (), getU ()]
+	const x_start = (shapes.length - 1) * settings.tracking * -0.5;
 
 	shapes.forEach ((shape, index) => {
-		shape.position.set (
-			settings.tracking * index,
-			0, 
-			0
-		);
+		shape.position.set (x_start + index * settings.tracking, 0, 0);
 		logoGroup.add (shape);
 	})
 }
@@ -267,5 +264,5 @@ function render() {
 	logoGroup.rotation.y += ( targetRotation - logoGroup.rotation.y ) * 0.05;
 	renderer.render( scene, camera );
 
-	buildLogo ();
+	// buildLogo ();
 }
