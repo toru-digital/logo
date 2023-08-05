@@ -199,13 +199,61 @@ function getR () {
 	return mesh
 }
 
+function getU () {
+
+	const corner_multiplier = settings.corners * 0.3
+	const corner = Math.min (settings.letter_size * corner_multiplier, settings.letter_size * 0.25)
+	const offset = settings.letter_size * -0.5;
+
+	const vertices_2d = [
+		[settings.letter_size - corner * 2, 0],
+		[corner * 2, 0],
+		[0, 0], 
+		[0, settings.letter_size],
+		[settings.letter_size, settings.letter_size],
+		[settings.letter_size, corner * 2],
+		[settings.letter_size, corner*2]
+	];
+
+	let vertices_3d = [];
+
+	vertices_2d.forEach ((v, index) => {
+		const v1 = v;
+		const v2 = vertices_2d [(index + 1) % vertices_2d.length];
+
+		vertices_3d = vertices_3d.concat ([
+			v1[0] + offset, v1[1] + offset, 0,
+			v2[0] + offset, v2[1] + offset, 0,
+			v2[0] + offset, v2[1] + offset, -1*settings.depth,
+
+			v2[0] + offset, v2[1] + offset, -1*settings.depth,
+			v1[0] + offset, v1[1] + offset, -1*settings.depth,
+			v1[0] + offset, v1[1] + offset, 0
+		])
+	})
+
+	const geometry = new THREE.BufferGeometry();
+
+	geometry.setAttribute (
+		'position', 
+		new THREE.BufferAttribute (new Float32Array (vertices_3d), 3) 
+	);
+
+	let mesh = new THREE.Mesh ( 
+		geometry, 
+		new THREE.MeshBasicMaterial ({side: THREE.DoubleSide, color: 0xFF00FF}) 
+	);
+
+	return mesh
+}
+
 function buildLogo () {
 
 	shapes.forEach (shape => {
 		logoGroup.remove (shape);
 	})
 
-	shapes = [ getT (), getO (), getR ()]
+	shapes = [ getT (), getO (), getR (), getU ()]
 	const x_start = (shapes.length - 1) * settings.tracking * -0.5;
 
 	shapes.forEach ((shape, index) => {
