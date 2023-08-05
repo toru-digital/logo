@@ -171,6 +171,9 @@ function getO () {
 		theta_next = (j / segments) * Math.PI * 2.0;
 		x_next = radius * Math.cos(theta_next);
 		y_next = radius * Math.sin(theta_next);
+
+		// console.log (x, y, x_next, y_next)
+
 		shape.moveTo(0, 0);
 		shape.lineTo(x, y);
 		shape.lineTo(x_next, y_next);
@@ -268,7 +271,7 @@ function buildLogo () {
 
 function buildControls () {
 	const gui = new GUI()
-	gui.add (settings, 'letter_size', 0, 400)
+	gui.add (settings, 'letter_size', 0.1, 400)
 	gui.add (settings, 'tracking', 0, 600)
 	gui.add (settings, 'corners', 0, 1)
 	gui.add (settings, 'bevelSize', 0, 6)
