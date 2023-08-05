@@ -18,6 +18,16 @@ let settings = {
 	corners : 0.75
 };
 
+const extrudeSettings = {
+	steps: 2,
+	depth: 200,
+	bevelEnabled: true,
+	bevelThickness: 1,
+	bevelSize: 1,
+	bevelOffset: 0,
+	bevelSegments: 1
+};
+
 buildScene ();
 buildLogo ();
 buildControls ();
@@ -128,7 +138,7 @@ function getT () {
 			0 + offset
 		)
 	
-	let geometry = new THREE.ShapeGeometry (shape);
+	let geometry = new THREE.ExtrudeGeometry (shape, extrudeSettings);
 	let mesh = new THREE.Mesh ( 
 		geometry, 
 		new THREE.MeshPhongMaterial ({side: THREE.DoubleSide, map: logoTexture}) 
@@ -174,7 +184,7 @@ function getR () {
 			0 + offset
 		)
 
-	let rGeometry = new THREE.ShapeGeometry ( shape );
+	let rGeometry = new THREE.ExtrudeGeometry (shape, extrudeSettings);
 	let mesh = new THREE.Mesh ( 
 		rGeometry, 
 		new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: logoTexture } ) 
@@ -206,7 +216,7 @@ function getU () {
 			settings.letter_size - corner * 2 + offset, 0 + offset
 		)
 
-	let geometry = new THREE.ShapeGeometry ( shape );
+	let geometry = new THREE.ExtrudeGeometry (shape, extrudeSettings);
 	let mesh = new THREE.Mesh ( 
 		geometry, 
 		new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: logoTexture } ) 
@@ -273,6 +283,7 @@ function animate() {
 }
 
 function render() {
+	logoGroup.rotation.x += ( targetRotation - logoGroup.rotation.x ) * 0.05;
 	logoGroup.rotation.y += ( targetRotation - logoGroup.rotation.y ) * 0.05;
 	renderer.render( scene, camera );
 
