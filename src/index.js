@@ -10,12 +10,12 @@ let pointerX = 0;
 let pointerXOnPointerDown = 0;
 let windowHalfX = window.innerWidth / 2;
 let logoTexture
+let shapes = [];
 
 let settings = {
 	letter_size : 150,
 	tracking : 200,
-	u_ratio: 0.15,
-	t_ratio: 0.4,
+	corners : 0.5
 };
 
 buildScene ();
@@ -66,8 +66,8 @@ function buildScene () {
 }
 
 function getT () {
-	const middle = settings.letter_size * settings.t_ratio;
-	const corner = (settings.letter_size - middle) * 0.5;
+	const middle = Math.min (settings.letter_size * settings.corners * 0.4, settings.letter_size);
+	const corner = Math.max ((settings.letter_size - middle) * 0.5, 0);
 	const offset = settings.letter_size * -0.5;
 
 	const shape = new THREE.Shape()
@@ -179,7 +179,7 @@ function getR () {
 }
 
 function getU () {
-	const corner = settings.letter_size * settings.u_ratio
+	const corner = Math.min (settings.letter_size * settings.corners * 0.15, settings.letter_size * 0.25)
 	const offset = settings.letter_size * -0.5;
 
 	const shape = new THREE.Shape()
@@ -209,7 +209,11 @@ function getU () {
 }
 
 function buildLogo () {
-	const shapes = [ getT (), getO (), getR (), getU ()]
+	shapes.forEach (shape => {
+		logoGroup.remove (shape);
+	})
+
+	shapes = [ getT (), getO (), getR (), getU ()]
 	const x_start = (shapes.length - 1) * settings.tracking * -0.5;
 
 	shapes.forEach ((shape, index) => {
@@ -220,8 +224,9 @@ function buildLogo () {
 
 function buildControls () {
 	const gui = new GUI()
-	gui.add (settings, 'letter_size', 0, 1000)
-	gui.add (settings, 'tracking', 0, 1000)
+	gui.add (settings, 'letter_size', 0, 400)
+	gui.add (settings, 'tracking', 0, 600)
+	gui.add (settings, 'corners', 0, 1)
 }
 
 function onWindowResize () {
@@ -264,5 +269,5 @@ function render() {
 	logoGroup.rotation.y += ( targetRotation - logoGroup.rotation.y ) * 0.05;
 	renderer.render( scene, camera );
 
-	// buildLogo ();
+	buildLogo ();
 }
