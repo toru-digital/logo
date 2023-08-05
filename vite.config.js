@@ -11,6 +11,7 @@ export default defineConfig({
 				arabic1: resolve(__dirname, 'arabic-1/index.html'),
 				flat1: resolve(__dirname, 'flat-1/index.html'),
 				flat2: resolve(__dirname, 'flat-2/index.html'),
+				flat3: resolve(__dirname, 'flat-3/index.html'),
 				ribbon1: resolve(__dirname, 'ribbon-1/index.html'),
 			},
 		},
