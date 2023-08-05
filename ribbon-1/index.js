@@ -9,14 +9,13 @@ let targetRotationOnPointerDown = 0;
 let pointerX = 0;
 let pointerXOnPointerDown = 0;
 let windowHalfX = window.innerWidth / 2;
-let logoTexture
 let shapes = [];
 
 let settings = {
 	letter_size : 150,
 	tracking : 200,
 	corners : 0.75,
-	depth : 100,
+	depth : 500,
 };
 
 buildScene ();
@@ -29,7 +28,7 @@ function buildScene () {
 	document.body.appendChild (container);
 
 	scene = new THREE.Scene();
-	scene.background = new THREE.Color( 0xf0f0f0 );
+	scene.background = new THREE.Color( 0x000000 );
 
 	camera = new THREE.OrthographicCamera
 	(
@@ -140,7 +139,7 @@ function getT () {
 
 	let mesh = new THREE.Mesh ( 
 		geometry, 
-		new THREE.MeshBasicMaterial ({side: THREE.DoubleSide, color: 0xFF00FF}) 
+		new THREE.MeshBasicMaterial ({side: THREE.DoubleSide, color: 0xFFFFFF}) 
 	);
 	
 	return mesh
@@ -176,7 +175,7 @@ function getO () {
 
 	let mesh = new THREE.Mesh ( 
 		geometry, 
-		new THREE.MeshBasicMaterial ({side: THREE.DoubleSide, color: 0xFF00FF}) 
+		new THREE.MeshBasicMaterial ({side: THREE.DoubleSide, color: 0xFFFFFF}) 
 	);
 	
 	return mesh
@@ -220,7 +219,7 @@ function getR () {
 
 	let mesh = new THREE.Mesh ( 
 		geometry, 
-		new THREE.MeshBasicMaterial ({side: THREE.DoubleSide, color: 0xFF00FF}) 
+		new THREE.MeshBasicMaterial ({side: THREE.DoubleSide, color: 0xFFFFFF}) 
 	);
 	
 	return mesh
@@ -228,8 +227,11 @@ function getR () {
 
 function getU () {
 
-	const corner_multiplier = settings.corners * 0.3
-	const corner = Math.min (settings.letter_size * corner_multiplier, settings.letter_size * 0.25)
+	const corner_multiplier = settings.corners * 0.5
+	const corner = Math.min (
+		settings.letter_size * corner_multiplier, 
+		settings.letter_size * 0.5
+	)
 	const offset = settings.letter_size * -0.5;
 
 	let vertices_2d = [
@@ -288,7 +290,7 @@ function getU () {
 
 	let mesh = new THREE.Mesh ( 
 		geometry, 
-		new THREE.MeshBasicMaterial ({side: THREE.DoubleSide, color: 0xFF00FF}) 
+		new THREE.MeshBasicMaterial ({side: THREE.DoubleSide, color: 0xFFFFFF}) 
 	);
 
 	return mesh
