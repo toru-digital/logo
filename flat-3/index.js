@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+import { TWEEN } from 'https://unpkg.com/three@0.139.0/examples/jsm/libs/tween.module.min.js';
 
 let container;
 let camera, scene, renderer;
 let logoGroup;
 let letter_size = 50
 let shapes = [];
-let shape_sizes = [];
 
 let settings = {
 	tracking : 100,
@@ -14,6 +14,7 @@ let settings = {
 	background_color : 0xf0f0f0,
 	foreground_color_1 : 0xCCCCCC,
 	foreground_color_2 : 0x000000,
+	scale_speed : 0.01
 };
 
 function buildScene () {
@@ -195,17 +196,23 @@ function buildGrid () {
 
 	const letters = [ getT (), getO (), getR (), getU ()]
 
-	shapes.forEach (shape => {logoGroup.remove (shape)})
+	shapes.forEach (shape => {logoGroup.remove (shape.mesh)})
+	shapes = [];
 
 	const x_start = (col_count - 1) * settings.tracking * -0.5;
 	const y_start = (row_count - 1) * settings.tracking * -0.5;
-	let is_middle_row, col_logo_offset
-	let geometry, color
+	let is_middle_row, col_logo_offset, distance_fromCenter_x, distance_fromCenter_y, delay
+	let geometry, color, yoyo
 
 	for (let i = 0; i < col_count; i++) {
 		for (let j = 0; j < row_count; j++) {
 			is_middle_row = j == Math.floor (row_count / 2)
 			col_logo_offset = is_middle_row ? i - Math.floor (col_count / 2) + 2 : -1
+
+			distance_fromCenter_x = Math.abs (i - Math.floor (col_count / 2) + 2)
+			distance_fromCenter_y = Math.abs (j - Math.floor (row_count / 2))
+
+			delay = Math.max (distance_fromCenter_x, distance_fromCenter_y) * 0.2 + Math.random() * 0.2
 
 			if (col_logo_offset >= 0 && col_logo_offset < 4) {
 				color = settings.foreground_color_2
@@ -219,12 +226,27 @@ function buildGrid () {
 				geometry, 
 				new THREE.MeshBasicMaterial ({color: color})
 			);
-				
+
 			mesh.position.set (x_start + i * settings.tracking, y_start + j * settings.tracking, 0)
-			shapes.push (mesh)
+			mesh.scale.set (0, 0, 0);
+			
+			shapes.push ({
+				mesh,
+				scale: 0,
+				delay,
+			})
+
 			logoGroup.add (mesh)
 		}
 	}
+
+	shapes.forEach (shape => {
+		new TWEEN.Tween(shape)
+				.to ( { scale:1 }, 1000)
+				.delay (shape.delay * 400)
+				.easing (TWEEN.Easing.Elastic.Out)
+				.start ()
+	})
 }
 
 function buildControls () {
@@ -246,10 +268,17 @@ function render() {
 	renderer.render( scene, camera );
 }
 
-// function animate () {
-// 	requestAnimationFrame(animate)
-// 	render()
-// }
+function animate () {
+
+	shapes.forEach (shape => {
+		shape.mesh.scale.set (shape.scale, shape.scale, shape.scale)
+	})
+
+	requestAnimationFrame(animate)
+	render()
+
+	TWEEN.update();
+}
 
 function startAnimation () {
 	scene.background = new THREE.Color(settings.background_color)
@@ -260,4 +289,4 @@ function startAnimation () {
 buildControls ();
 buildScene ();
 
-// animate ()
+animate ()
