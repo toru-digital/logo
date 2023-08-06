@@ -9,17 +9,58 @@ let shapes = [];
 
 let settings = {
 	letter_size : 300,
-	tracking : 200,
+	tracking : 400,
 	corners : 0.75,
 	depth : 15,
 	current_depth : 0,
 	background_color : 0xf0f0f0,
 	foreground_color : 0x000000,
-	t:false,
-	o:true,
+	t:true,
+	o:false,
 	r:false,
 	u:false,
+	tween: TWEEN.Easing.Quadratic.Out,
+	forwards: true,
+	speed: 1000
 };
+
+const constants = {
+	tween: {
+			"Linear.In" : TWEEN.Easing.Linear.In,
+			"Linear.Out" : TWEEN.Easing.Linear.Out,
+			"Linear.InOut" : TWEEN.Easing.Linear.InOut,
+			"Quadratic.In" : TWEEN.Easing.Quadratic.In,
+			"Quadratic.Out" : TWEEN.Easing.Quadratic.Out,
+			"Quadratic.InOut" : TWEEN.Easing.Quadratic.InOut,
+			"Cubic.In" : TWEEN.Easing.Cubic.In,
+			"Cubic.Out" : TWEEN.Easing.Cubic.Out,
+			"Cubic.InOut" : TWEEN.Easing.Cubic.InOut,
+			"Quartic.In" : TWEEN.Easing.Quartic.In,
+			"Quartic.Out" : TWEEN.Easing.Quartic.Out,
+			"Quartic.InOut" : TWEEN.Easing.Quartic.InOut,
+			"Quintic.In" : TWEEN.Easing.Quintic.In,
+			"Quintic.Out" : TWEEN.Easing.Quintic.Out,
+			"Quintic.InOut" : TWEEN.Easing.Quintic.InOut,
+			"Sinusoidal.In" : TWEEN.Easing.Sinusoidal.In,
+			"Sinusoidal.Out" : TWEEN.Easing.Sinusoidal.Out,
+			"Sinusoidal.InOut" : TWEEN.Easing.Sinusoidal.InOut,
+			"Exponential.In" : TWEEN.Easing.Exponential.In,
+			"Exponential.Out" : TWEEN.Easing.Exponential.Out,
+			"Exponential.InOut" : TWEEN.Easing.Exponential.InOut,
+			"Circular.In" : TWEEN.Easing.Circular.In,
+			"Circular.Out" : TWEEN.Easing.Circular.Out,
+			"Circular.InOut" : TWEEN.Easing.Circular.InOut,
+			"Elastic.In" : TWEEN.Easing.Elastic.In,
+			"Elastic.Out" : TWEEN.Easing.Elastic.Out,
+			"Elastic.InOut" : TWEEN.Easing.Elastic.InOut,
+			"Back.In" : TWEEN.Easing.Back.In,
+			"Back.Out" : TWEEN.Easing.Back.Out,
+			"Back.InOut" : TWEEN.Easing.Back.InOut,
+			"Bounce.In" : TWEEN.Easing.Bounce.In,
+			"Bounce.Out" : TWEEN.Easing.Bounce.Out,
+			"Bounce.InOut" : TWEEN.Easing.Bounce.InOut,
+	}
+}
 
 function buildScene () {
 	container = document.createElement ('div');
@@ -340,6 +381,14 @@ function buildControls () {
 
 	lettersFolder.close ()
 
+	const animationFolder = gui.addFolder ('Animation')
+
+	animationFolder.add (settings, 'forwards')
+	animationFolder.add (settings, 'tween', constants.tween )
+	animationFolder.add (settings, 'speed' )
+
+	animationFolder.close ()
+
 	var obj = { go:startAnimation};
 	gui.add (obj,'go');
 }
@@ -352,8 +401,8 @@ function startAnimation () {
 	settings.current_depth = 0
 
 	new TWEEN.Tween(settings)
-				.to ( { current_depth:settings.depth * -1 }, 1000)
-				.easing (TWEEN.Easing.Elastic.Out)
+				.to ( { current_depth:settings.depth * (settings.forwards ? 1 : -1) }, settings.speed)
+				.easing (settings.tween)
 				.start ()
 }
 
