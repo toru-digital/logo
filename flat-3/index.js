@@ -4,16 +4,16 @@ import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 let container;
 let camera, scene, renderer;
 let logoGroup;
-let letter_size
+let letter_size = 50
 let shapes = [];
+let shape_sizes = [];
 
 let settings = {
-	letter_size : 45,
-	tracking : 200,
+	tracking : 100,
 	corners : 0.75,
 	background_color : 0xf0f0f0,
-	foreground_color_1 : 0x000000,
-	foreground_color_2 : 0xFF0000,
+	foreground_color_1 : 0xCCCCCC,
+	foreground_color_2 : 0x000000,
 };
 
 function buildScene () {
@@ -105,13 +105,7 @@ function getT () {
 			0 + offset
 		)
 	
-	let geometry = new THREE.ShapeGeometry (shape);
-	let mesh = new THREE.Mesh ( 
-		geometry, 
-		new THREE.MeshBasicMaterial ({color: settings.foreground_color_1})
-	);
-
-	return mesh
+	return new THREE.ShapeGeometry (shape);
 }
 
 function getO () {
@@ -136,12 +130,7 @@ function getO () {
 		shape.lineTo(0, 0);
 	}
 
-	let geometry = new THREE.ShapeGeometry (shape);
-	let mesh = new THREE.Mesh ( 
-		geometry, 
-		new THREE.MeshBasicMaterial ({color: settings.foreground_color_1})
-	);
-	return mesh
+	return new THREE.ShapeGeometry (shape);
 }
 
 function getR () {
@@ -170,12 +159,7 @@ function getR () {
 			0 + offset
 		)
 
-	let geometry = new THREE.ShapeGeometry (shape);
-	let mesh = new THREE.Mesh ( 
-		geometry, 
-		new THREE.MeshBasicMaterial ({color: settings.foreground_color_1})
-	);
-	return mesh
+	return new THREE.ShapeGeometry (shape);
 }
 
 function getU () {
@@ -202,17 +186,11 @@ function getU () {
 			letter_size - corner * 2 + offset, 0 + offset
 		)
 
-	let geometry = new THREE.ShapeGeometry ( shape );
-	let mesh = new THREE.Mesh ( 
-		geometry, 
-		new THREE.MeshBasicMaterial ({color: settings.foreground_color_1})
-	);
-
-	return mesh
+	return new THREE.ShapeGeometry ( shape );
 }
 
 function buildGrid () {
-	const col_count = 2 * Math.round (window.innerWidth * 2 / settings.tracking / 2) + 1
+	const col_count = 2 * Math.round (window.innerWidth * 2 / settings.tracking / 2)
 	const row_count = 2 * Math.round (window.innerHeight * 2 / settings.tracking / 2) + 1
 
 	const letters = [ getT (), getO (), getR (), getU ()]
@@ -221,13 +199,30 @@ function buildGrid () {
 
 	const x_start = (col_count - 1) * settings.tracking * -0.5;
 	const y_start = (row_count - 1) * settings.tracking * -0.5;
+	let is_middle_row, col_logo_offset
+	let geometry, color
 
 	for (let i = 0; i < col_count; i++) {
 		for (let j = 0; j < row_count; j++) {
-			const shape = letters [Math.floor (Math.random () * letters.length)].clone ()
-			shapes.push (shape)
-			shape.position.set (x_start + i * settings.tracking, y_start + j * settings.tracking, 0)
-			logoGroup.add (shape)
+			is_middle_row = j == Math.floor (row_count / 2)
+			col_logo_offset = is_middle_row ? i - Math.floor (col_count / 2) + 2 : -1
+
+			if (col_logo_offset >= 0 && col_logo_offset < 4) {
+				color = settings.foreground_color_2
+				geometry = letters [col_logo_offset].clone ()
+			} else {
+				color = settings.foreground_color_1
+				geometry = letters [Math.floor (Math.random () * letters.length)].clone ()
+			}
+
+			let mesh = new THREE.Mesh ( 
+				geometry, 
+				new THREE.MeshBasicMaterial ({color: color})
+			);
+				
+			mesh.position.set (x_start + i * settings.tracking, y_start + j * settings.tracking, 0)
+			shapes.push (mesh)
+			logoGroup.add (mesh)
 		}
 	}
 }
@@ -235,33 +230,34 @@ function buildGrid () {
 function buildControls () {
 	const gui = new GUI ()
 
-	const settingsFolder = gui.addFolder ('Settings')
+	const colorsFolder = gui.addFolder ('Colours')
 
-	settingsFolder.add (settings, 'letter_size', 0, 400)
-	settingsFolder.add (settings, 'tracking', 50, 600)
-	settingsFolder.add (settings, 'corners', 0, 1)
-	settingsFolder.addColor (settings, 'background_color')
-	settingsFolder.addColor (settings, 'foreground_color_1')
-	settingsFolder.addColor (settings, 'foreground_color_2')
+	colorsFolder.addColor (settings, 'background_color')
+	colorsFolder.addColor (settings, 'foreground_color_1')
+	colorsFolder.addColor (settings, 'foreground_color_2')
 
-	settingsFolder.close ()
+	colorsFolder.close ()
 
-	var obj = { go:function () { console.log("clicked") }};
+	var obj = { go:startAnimation};
 	gui.add (obj,'go');
-
-	gui.onChange (render)
 }
 
 function render() {
-	letter_size = Math.min (settings.letter_size, settings.tracking)
-
-	scene.background = new THREE.Color(settings.background_color);
-	buildGrid ();
-	
 	renderer.render( scene, camera );
 }
 
-buildScene ();
-buildGrid ();
+// function animate () {
+// 	requestAnimationFrame(animate)
+// 	render()
+// }
+
+function startAnimation () {
+	scene.background = new THREE.Color(settings.background_color)
+	buildGrid ();
+	render ()
+}
+
 buildControls ();
-render ();
+buildScene ();
+
+// animate ()
