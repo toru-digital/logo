@@ -202,7 +202,7 @@ function buildGrid () {
 	const x_start = (col_count - 1) * settings.tracking * -0.5;
 	const y_start = (row_count - 1) * settings.tracking * -0.5;
 	let is_middle_row, col_logo_offset, distance_fromCenter_x, distance_fromCenter_y, delay
-	let geometry, color, yoyo
+	let geometry, color, opacity
 
 	for (let i = 0; i < col_count; i++) {
 		for (let j = 0; j < row_count; j++) {
@@ -212,21 +212,23 @@ function buildGrid () {
 			distance_fromCenter_x = Math.abs (i - Math.floor (col_count / 2) + 2)
 			distance_fromCenter_y = Math.abs (j - Math.floor (row_count / 2))
 
-			delay = Math.max (distance_fromCenter_x, distance_fromCenter_y) * 0.2 + Math.random() * 0.2
+			delay = Math.max (
+				distance_fromCenter_x, 
+				distance_fromCenter_y
+			) * 0.2 + Math.random() * 0.2
 
 			if (col_logo_offset >= 0 && col_logo_offset < 4) {
 				color = settings.foreground_color_2
 				geometry = letters [col_logo_offset].clone ()
+				opacity = 1
 			} else {
 				color = settings.foreground_color_1
 				geometry = letters [Math.floor (Math.random () * letters.length)].clone ()
+				opacity = Math.random () * 0.5 + 0.5
 			}
 
-			let mesh = new THREE.Mesh ( 
-				geometry, 
-				new THREE.MeshBasicMaterial ({color: color})
-			);
-
+			let material = new THREE.MeshBasicMaterial ({color: color, transparent : true, opacity})
+			let mesh = new THREE.Mesh (geometry, material);
 			mesh.position.set (x_start + i * settings.tracking, y_start + j * settings.tracking, 0)
 			mesh.scale.set (0, 0, 0);
 			
