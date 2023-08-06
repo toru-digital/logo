@@ -14,8 +14,49 @@ let settings = {
 	background_color : 0x5FD1F0,
 	foreground_color_1 : 0xFFFFFF,
 	foreground_color_2 : 0x000000,
-	scale_speed : 0.01
+	scale_speed : 0.01,
+	tween: TWEEN.Easing.Elastic.Out,
+	speed: 1900,
+	delay: 500,
 };
+
+const constants = {
+	tween: {
+			"Linear.In" : TWEEN.Easing.Linear.In,
+			"Linear.Out" : TWEEN.Easing.Linear.Out,
+			"Linear.InOut" : TWEEN.Easing.Linear.InOut,
+			"Quadratic.In" : TWEEN.Easing.Quadratic.In,
+			"Quadratic.Out" : TWEEN.Easing.Quadratic.Out,
+			"Quadratic.InOut" : TWEEN.Easing.Quadratic.InOut,
+			"Cubic.In" : TWEEN.Easing.Cubic.In,
+			"Cubic.Out" : TWEEN.Easing.Cubic.Out,
+			"Cubic.InOut" : TWEEN.Easing.Cubic.InOut,
+			"Quartic.In" : TWEEN.Easing.Quartic.In,
+			"Quartic.Out" : TWEEN.Easing.Quartic.Out,
+			"Quartic.InOut" : TWEEN.Easing.Quartic.InOut,
+			"Quintic.In" : TWEEN.Easing.Quintic.In,
+			"Quintic.Out" : TWEEN.Easing.Quintic.Out,
+			"Quintic.InOut" : TWEEN.Easing.Quintic.InOut,
+			"Sinusoidal.In" : TWEEN.Easing.Sinusoidal.In,
+			"Sinusoidal.Out" : TWEEN.Easing.Sinusoidal.Out,
+			"Sinusoidal.InOut" : TWEEN.Easing.Sinusoidal.InOut,
+			"Exponential.In" : TWEEN.Easing.Exponential.In,
+			"Exponential.Out" : TWEEN.Easing.Exponential.Out,
+			"Exponential.InOut" : TWEEN.Easing.Exponential.InOut,
+			"Circular.In" : TWEEN.Easing.Circular.In,
+			"Circular.Out" : TWEEN.Easing.Circular.Out,
+			"Circular.InOut" : TWEEN.Easing.Circular.InOut,
+			"Elastic.In" : TWEEN.Easing.Elastic.In,
+			"Elastic.Out" : TWEEN.Easing.Elastic.Out,
+			"Elastic.InOut" : TWEEN.Easing.Elastic.InOut,
+			"Back.In" : TWEEN.Easing.Back.In,
+			"Back.Out" : TWEEN.Easing.Back.Out,
+			"Back.InOut" : TWEEN.Easing.Back.InOut,
+			"Bounce.In" : TWEEN.Easing.Bounce.In,
+			"Bounce.Out" : TWEEN.Easing.Bounce.Out,
+			"Bounce.InOut" : TWEEN.Easing.Bounce.InOut,
+	}
+}
 
 function buildScene () {
 	container = document.createElement ('div');
@@ -244,9 +285,9 @@ function buildGrid () {
 
 	shapes.forEach (shape => {
 		new TWEEN.Tween(shape)
-				.to ( { scale:1 }, 1000)
-				.delay (shape.delay * 400)
-				.easing (TWEEN.Easing.Elastic.Out)
+				.to ( { scale:1 }, settings.speed)
+				.delay (shape.delay * settings.delay)
+				.easing (settings.tween)
 				.start ()
 	})
 }
@@ -269,6 +310,14 @@ function buildControls () {
 	shapeFolder.add (settings, 'corners', 0, 1)
 
 	shapeFolder.close ()
+
+	const animationFolder = gui.addFolder ('Animation')
+
+	animationFolder.add (settings, 'tween', constants.tween )
+	animationFolder.add (settings, 'speed', 10, 3000)
+	animationFolder.add (settings, 'delay', 0, 2000)
+
+	animationFolder.close ()
 
 	var obj = { go:startAnimation};
 	gui.add (obj,'go');
