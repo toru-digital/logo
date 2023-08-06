@@ -296,5 +296,5 @@ function startAnimation () {
 
 buildControls ();
 buildScene ();
-
+scene.background = new THREE.Color(settings.background_color)
 animate ()
