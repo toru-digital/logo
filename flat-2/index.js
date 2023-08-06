@@ -1,29 +1,21 @@
 import * as THREE from 'three';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+import { TWEEN } from 'https://unpkg.com/three@0.139.0/examples/jsm/libs/tween.module.min.js';
 
 let container;
 let camera, scene, renderer;
 let logoGroup;
-let targetRotation = 0;
-let targetRotationOnPointerDown = 0;
-let pointerX = 0;
-let pointerXOnPointerDown = 0;
-let windowHalfX = window.innerWidth / 2;
-let logoTexture
 let shapes = [];
 
 let settings = {
-	letter_size : 150,
-	tracking : 200,
+	letter_size : 70,
+	tracking : 110,
 	corners : 0.75,
-	background_color : 0xf0f0f0,
-	foreground_color : 0x000000,
+	background_color : 0x5FD1F0,
+	foreground_color_1 : 0xFFFFFF,
+	foreground_color_2 : 0x000000,
+	scale_speed : 0.01
 };
-
-buildScene ();
-buildLogo ();
-buildControls ();
-animate ();
 
 function buildScene () {
 	container = document.createElement ('div');
@@ -31,44 +23,29 @@ function buildScene () {
 
 	scene = new THREE.Scene();
 
-	camera = new THREE.PerspectiveCamera
+	camera = new THREE.OrthographicCamera
 	(
-		50, 
-		window.innerWidth / window.innerHeight, 
-		1,
-		4000 
+		window.innerWidth / - 2, 
+		window.innerWidth / 2, 
+		window.innerHeight / 2, 
+		window.innerHeight / - 2,
+		1, 
+		10000
 	);
 
 	camera.position.set (0, 0, 1200);
 	scene.add (camera);
-
-	const light = new THREE.PointLight (0xffffff, 2.5, 0, 0);
-	camera.add (light);
 
 	renderer = new THREE.WebGLRenderer( { antialias: true } );
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	container.appendChild( renderer.domElement );
 
-	container.style.touchAction = 'none';
-	container.addEventListener( 'pointerdown', onPointerDown );
-
-	window.addEventListener( 'resize', onWindowResize );
-
 	logoGroup = new THREE.Group ();
 	scene.add (logoGroup);
-
-	const loader = new THREE.TextureLoader ();
-	logoTexture = loader.load ('textures/uv_grid_opengl.jpg');
-	logoTexture.colorSpace = THREE.SRGBColorSpace;
-
-	logoTexture.wrapS = logoTexture.wrapT = THREE.RepeatWrapping;
-	logoTexture.repeat.set( 0.008, 0.008 );	
 }
 
 function getT () {
-	// const corner_multiplier = settings.corners * -1 // explore this
-	// const corner_multiplier = Math.max ((settings.corners * 1.1) - 0.1, 0) // and this
 	const corner_multiplier = 0.4 + 0.6 * (1-settings.corners);
 
 	const middle = Math.min (settings.letter_size * corner_multiplier, settings.letter_size);
@@ -129,13 +106,7 @@ function getT () {
 			0 + offset
 		)
 	
-	let geometry = new THREE.ShapeGeometry (shape);
-	let mesh = new THREE.Mesh ( 
-		geometry, 
-		new THREE.MeshPhongMaterial ({side: THREE.DoubleSide, map: logoTexture}) 
-	);
-
-	return mesh
+	return new THREE.ShapeGeometry (shape);
 }
 
 function getO () {
@@ -160,12 +131,7 @@ function getO () {
 		shape.lineTo(0, 0);
 	}
 
-	let geometry = new THREE.ShapeGeometry (shape);
-	let mesh = new THREE.Mesh ( 
-		geometry, 
-		new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: logoTexture } ) 
-	);
-	return mesh
+	return new THREE.ShapeGeometry (shape);
 }
 
 function getR () {
@@ -194,12 +160,7 @@ function getR () {
 			0 + offset
 		)
 
-	let geometry = new THREE.ShapeGeometry (shape);
-	let mesh = new THREE.Mesh ( 
-		geometry, 
-		new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: logoTexture } ) 
-	);
-	return mesh
+	return new THREE.ShapeGeometry (shape);
 }
 
 function getU () {
@@ -226,78 +187,116 @@ function getU () {
 			settings.letter_size - corner * 2 + offset, 0 + offset
 		)
 
-	let geometry = new THREE.ShapeGeometry ( shape );
-	let mesh = new THREE.Mesh ( 
-		geometry, 
-		new THREE.MeshPhongMaterial( { side: THREE.DoubleSide, map: logoTexture } ) 
-	);
-
-	return mesh
+	return new THREE.ShapeGeometry ( shape );
 }
 
-function buildLogo () {
+function buildGrid () {
+	const col_count = 2 * Math.round (window.innerWidth * 2 / settings.tracking / 2)
+	const row_count = 2 * Math.round (window.innerHeight * 2 / settings.tracking / 2) + 1
+
+	const letters = [ getT (), getO (), getR (), getU ()]
+
+	shapes.forEach (shape => {logoGroup.remove (shape.mesh)})
+	shapes = [];
+
+	const x_start = (col_count - 1) * settings.tracking * -0.5;
+	const y_start = (row_count - 1) * settings.tracking * -0.5;
+	let is_middle_row, col_logo_offset, distance_fromCenter_x, distance_fromCenter_y, delay
+	let geometry, color, opacity
+
+	for (let i = 0; i < col_count; i++) {
+		for (let j = 0; j < row_count; j++) {
+			is_middle_row = j == Math.floor (row_count / 2)
+			col_logo_offset = is_middle_row ? i - Math.floor (col_count / 2) + 2 : -1
+
+			distance_fromCenter_x = Math.abs (i - Math.floor (col_count / 2) + 2)
+			distance_fromCenter_y = Math.abs (j - Math.floor (row_count / 2))
+
+			delay = Math.max (
+				distance_fromCenter_x, 
+				distance_fromCenter_y
+			) * 0.2 + Math.random() * 0.2
+
+			if (col_logo_offset >= 0 && col_logo_offset < 4) {
+				color = settings.foreground_color_2
+				geometry = letters [col_logo_offset].clone ()
+				opacity = 1
+			} else {
+				color = settings.foreground_color_1
+				geometry = letters [Math.floor (Math.random () * letters.length)].clone ()
+				opacity = Math.random () * 0.8 + 0.8
+			}
+
+			let material = new THREE.MeshBasicMaterial ({color: color, transparent : true, opacity})
+			let mesh = new THREE.Mesh (geometry, material);
+			mesh.position.set (x_start + i * settings.tracking, y_start + j * settings.tracking, 0)
+			mesh.scale.set (0, 0, 0);
+			
+			shapes.push ({
+				mesh,
+				scale: 0,
+				delay,
+			})
+
+			logoGroup.add (mesh)
+		}
+	}
+
 	shapes.forEach (shape => {
-		logoGroup.remove (shape);
-	})
-
-	shapes = [ getT (), getO (), getR (), getU ()]
-	const x_start = (shapes.length - 1) * settings.tracking * -0.5;
-
-	shapes.forEach ((shape, index) => {
-		shape.position.set (x_start + index * settings.tracking, 0, 0);
-		logoGroup.add (shape);
+		new TWEEN.Tween(shape)
+				.to ( { scale:1 }, 1000)
+				.delay (shape.delay * 400)
+				.easing (TWEEN.Easing.Elastic.Out)
+				.start ()
 	})
 }
 
 function buildControls () {
-	const gui = new GUI()
-	gui.add (settings, 'letter_size', 0, 400)
-	gui.add (settings, 'tracking', 0, 600)
-	gui.add (settings, 'corners', 0, 1)
-	// gui.addColor (settings, 'background_color')
-}
+	const gui = new GUI ()
 
-function onWindowResize () {
-	windowHalfX = window.innerWidth / 2;
-	camera.aspect = window.innerWidth / window.innerHeight;
-	camera.updateProjectionMatrix ();
-	renderer.setSize( window.innerWidth, window.innerHeight );
-}
+	const colorsFolder = gui.addFolder ('Colours')
 
-function onPointerDown (event) {
+	colorsFolder.addColor (settings, 'background_color')
+	colorsFolder.addColor (settings, 'foreground_color_1')
+	colorsFolder.addColor (settings, 'foreground_color_2')
 
-	if ( event.isPrimary === false ) return;
+	colorsFolder.close ()
 
-	pointerXOnPointerDown = event.clientX - windowHalfX;
-	targetRotationOnPointerDown = targetRotation;
+	const shapeFolder = gui.addFolder ('Shape')
 
-	document.addEventListener( 'pointermove', onPointerMove );
-	document.addEventListener( 'pointerup', onPointerUp );
+	shapeFolder.add (settings, 'letter_size', 0, 300)
+	shapeFolder.add (settings, 'tracking', 0, 300)
+	shapeFolder.add (settings, 'corners', 0, 1)
 
-}
+	shapeFolder.close ()
 
-function onPointerMove (event) {
-	if ( event.isPrimary === false ) return;
-	pointerX = event.clientX - windowHalfX;
-	targetRotation = targetRotationOnPointerDown + ( pointerX - pointerXOnPointerDown ) * 0.02;
-}
-
-function onPointerUp() {
-	if ( event.isPrimary === false ) return;
-	document.removeEventListener( 'pointermove', onPointerMove );
-	document.removeEventListener( 'pointerup', onPointerUp );
-}
-
-function animate() {
-	requestAnimationFrame( animate );
-	render();
+	var obj = { go:startAnimation};
+	gui.add (obj,'go');
 }
 
 function render() {
-	logoGroup.rotation.y += ( targetRotation - logoGroup.rotation.y ) * 0.05;
 	renderer.render( scene, camera );
-
-	// scene.background = new THREE.Color(settings.background_color);
-
-	buildLogo ();
 }
+
+function animate () {
+
+	shapes.forEach (shape => {
+		shape.mesh.scale.set (shape.scale, shape.scale, shape.scale)
+	})
+
+	requestAnimationFrame(animate)
+	render()
+
+	TWEEN.update();
+}
+
+function startAnimation () {
+	scene.background = new THREE.Color(settings.background_color)
+	buildGrid ();
+	render ()
+}
+
+buildControls ();
+buildScene ();
+scene.background = new THREE.Color(settings.background_color)
+animate ()

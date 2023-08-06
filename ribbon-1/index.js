@@ -16,8 +16,8 @@ let settings = {
 	tracking : 200,
 	corners : 0.75,
 	depth : 1000,
-	background_color : 0xf0f0f0,
-	foreground_color : 0x000000,
+	background_color : 0xA4E77F,
+	foreground_color : 0xFFFFFF,
 };
 
 buildScene ();

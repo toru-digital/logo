@@ -4,18 +4,13 @@ import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 let container;
 let camera, scene, renderer;
 let logoGroup;
-let targetRotation = 0;
-let targetRotationOnPointerDown = 0;
-let pointerX = 0;
-let pointerXOnPointerDown = 0;
-let windowHalfX = window.innerWidth / 2;
 let shapes = [];
 
 let settings = {
 	letter_size : 150,
 	tracking : 200,
 	corners : 0.75,
-	background_color : 0xf0f0f0,
+	background_color : 0xEDFE06,
 	foreground_color : 0x000000,
 };
 
@@ -50,9 +45,6 @@ function buildScene () {
 	container.appendChild( renderer.domElement );
 
 	container.style.touchAction = 'none';
-	container.addEventListener( 'pointerdown', onPointerDown );
-
-	window.addEventListener( 'resize', onWindowResize );
 
 	logoGroup = new THREE.Group ();
 	scene.add (logoGroup);
@@ -250,36 +242,6 @@ function buildControls () {
 	gui.addColor (settings, 'foreground_color')
 }
 
-function onWindowResize () {
-	windowHalfX = window.innerWidth / 2;
-	camera.aspect = window.innerWidth / window.innerHeight;
-	camera.updateProjectionMatrix ();
-	renderer.setSize( window.innerWidth, window.innerHeight );
-}
-
-function onPointerDown (event) {
-
-	if ( event.isPrimary === false ) return;
-
-	pointerXOnPointerDown = event.clientX - windowHalfX;
-	targetRotationOnPointerDown = targetRotation;
-
-	document.addEventListener( 'pointermove', onPointerMove );
-	document.addEventListener( 'pointerup', onPointerUp );
-
-}
-
-function onPointerMove (event) {
-	if ( event.isPrimary === false ) return;
-	pointerX = event.clientX - windowHalfX;
-	targetRotation = targetRotationOnPointerDown + ( pointerX - pointerXOnPointerDown ) * 0.02;
-}
-
-function onPointerUp() {
-	if ( event.isPrimary === false ) return;
-	document.removeEventListener( 'pointermove', onPointerMove );
-	document.removeEventListener( 'pointerup', onPointerUp );
-}
 
 function animate() {
 	requestAnimationFrame( animate );
@@ -287,7 +249,6 @@ function animate() {
 }
 
 function render() {
-	logoGroup.rotation.y += ( targetRotation - logoGroup.rotation.y ) * 0.05;
 	renderer.render( scene, camera );
 
 	scene.background = new THREE.Color(settings.background_color);

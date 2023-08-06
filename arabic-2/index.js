@@ -1,45 +1,82 @@
 import * as THREE from 'three';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+import { TWEEN } from 'https://unpkg.com/three@0.139.0/examples/jsm/libs/tween.module.min.js';
 
 let container;
 let camera, scene, renderer;
 let logoGroup;
-let targetRotation = 0;
-let targetRotationOnPointerDown = 0;
-let pointerX = 0;
-let pointerXOnPointerDown = 0;
-let windowHalfX = window.innerWidth / 2;
-let logoTexture
 let shapes = [];
 
 let settings = {
-	letter_size : 150,
-	tracking : 200,
+	letter_size : 190,
+	tracking : 240,
 	corners : 0.75,
-	bevelSize: 0,
-	background_color : 0x5FD1F0,
+	depth : 20,
+	current_depth : 0,
+	background_color : 0xA4E77F,
 	foreground_color : 0xFFFFFF,
+	t:true,
+	o:true,
+	r:true,
+	u:true,
+	tween: TWEEN.Easing.Exponential.Out,
+	forwards: true,
+	speed: 2000
 };
 
 const extrudeSettings = {
 	steps: 1,
 	bevelEnabled: true,
-	bevelThickness: 1,
+	bevelThickness: 0,
 	bevelOffset: 0,
 	bevelSegments: 1,
 	depth : 1000
 };
 
-buildScene ();
-buildLogo ();
-buildControls ();
-animate ();
+const constants = {
+	tween: {
+			"Linear.In" : TWEEN.Easing.Linear.In,
+			"Linear.Out" : TWEEN.Easing.Linear.Out,
+			"Linear.InOut" : TWEEN.Easing.Linear.InOut,
+			"Quadratic.In" : TWEEN.Easing.Quadratic.In,
+			"Quadratic.Out" : TWEEN.Easing.Quadratic.Out,
+			"Quadratic.InOut" : TWEEN.Easing.Quadratic.InOut,
+			"Cubic.In" : TWEEN.Easing.Cubic.In,
+			"Cubic.Out" : TWEEN.Easing.Cubic.Out,
+			"Cubic.InOut" : TWEEN.Easing.Cubic.InOut,
+			"Quartic.In" : TWEEN.Easing.Quartic.In,
+			"Quartic.Out" : TWEEN.Easing.Quartic.Out,
+			"Quartic.InOut" : TWEEN.Easing.Quartic.InOut,
+			"Quintic.In" : TWEEN.Easing.Quintic.In,
+			"Quintic.Out" : TWEEN.Easing.Quintic.Out,
+			"Quintic.InOut" : TWEEN.Easing.Quintic.InOut,
+			"Sinusoidal.In" : TWEEN.Easing.Sinusoidal.In,
+			"Sinusoidal.Out" : TWEEN.Easing.Sinusoidal.Out,
+			"Sinusoidal.InOut" : TWEEN.Easing.Sinusoidal.InOut,
+			"Exponential.In" : TWEEN.Easing.Exponential.In,
+			"Exponential.Out" : TWEEN.Easing.Exponential.Out,
+			"Exponential.InOut" : TWEEN.Easing.Exponential.InOut,
+			"Circular.In" : TWEEN.Easing.Circular.In,
+			"Circular.Out" : TWEEN.Easing.Circular.Out,
+			"Circular.InOut" : TWEEN.Easing.Circular.InOut,
+			"Elastic.In" : TWEEN.Easing.Elastic.In,
+			"Elastic.Out" : TWEEN.Easing.Elastic.Out,
+			"Elastic.InOut" : TWEEN.Easing.Elastic.InOut,
+			"Back.In" : TWEEN.Easing.Back.In,
+			"Back.Out" : TWEEN.Easing.Back.Out,
+			"Back.InOut" : TWEEN.Easing.Back.InOut,
+			"Bounce.In" : TWEEN.Easing.Bounce.In,
+			"Bounce.Out" : TWEEN.Easing.Bounce.Out,
+			"Bounce.InOut" : TWEEN.Easing.Bounce.InOut,
+	}
+}
 
 function buildScene () {
 	container = document.createElement ('div');
 	document.body.appendChild (container);
 
 	scene = new THREE.Scene();
+
 	camera = new THREE.OrthographicCamera
 	(
 		window.innerWidth / - 2, 
@@ -53,28 +90,50 @@ function buildScene () {
 	camera.position.set (0, 0, 1200);
 	scene.add (camera);
 
-	const light = new THREE.PointLight (0xffffff, 2.5, 0, 0);
-	camera.add (light);
-
 	renderer = new THREE.WebGLRenderer( { antialias: true } );
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	container.appendChild( renderer.domElement );
 
-	container.style.touchAction = 'none';
-	container.addEventListener( 'pointerdown', onPointerDown );
-
-	window.addEventListener( 'resize', onWindowResize );
-
 	logoGroup = new THREE.Group ();
-	scene.add (logoGroup);
+	scene.add (logoGroup);	
 
-	const loader = new THREE.TextureLoader ();
-	logoTexture = loader.load ('textures/uv_grid_opengl.jpg');
-	logoTexture.colorSpace = THREE.SRGBColorSpace;
+	console.log (settings.background_color)
+	scene.background = new THREE.Color( settings.background_color );
+}
 
-	logoTexture.wrapS = logoTexture.wrapT = THREE.RepeatWrapping;
-	logoTexture.repeat.set( 0.008, 0.008 );	
+function getCircle (radius, offset_x, offset_y, start, end) {
+	let segments = 64;
+	let theta, x1, y1
+	let theta_next, x2, y2, j;
+	let arr = []
+
+	const start_index = segments * start;
+	const end_index = segments * end;
+
+	function getPoints (i) {
+		theta = ((i + 1) / segments) * Math.PI * 2.0;
+		x1 = radius * Math.cos(theta) + offset_x;
+		y1 = radius * Math.sin(theta) + offset_y;
+		j = i + 2;
+		if( (j - 1) === segments ) j = 1;
+		theta_next = (j / segments) * Math.PI * 2.0;
+		x2 = radius * Math.cos(theta_next) + offset_x;
+		y2 = radius * Math.sin(theta_next) + offset_y;
+		return [x1, y1], [x2, y2]
+	}
+
+	if (start < end) {
+		for (let i = start_index; i < end_index; i++) {
+			arr.push (getPoints(i));
+		}
+	} else {
+		for (let i = start_index-1; i >= end_index; i--) {
+			arr.push (getPoints(i));
+		}
+	}
+
+	return arr;
 }
 
 function getT () {
@@ -264,7 +323,13 @@ function buildLogo () {
 		logoGroup.remove (shape);
 	})
 
-	shapes = [ getT (), getO (), getR (), getU ()]
+	shapes = []
+
+	if (settings.t) shapes.push (getT ())
+	if (settings.o) shapes.push (getO ())
+	if (settings.r) shapes.push (getR ())
+	if (settings.u) shapes.push (getU ())
+
 	const x_start = (shapes.length - 1) * settings.tracking * -0.5;
 
 	shapes.forEach ((shape, index) => {
@@ -275,56 +340,71 @@ function buildLogo () {
 
 function buildControls () {
 	const gui = new GUI()
-	gui.add (settings, 'letter_size', 0.1, 400)
-	gui.add (settings, 'tracking', 0, 600)
-	gui.add (settings, 'corners', 0, 1)
-	gui.add (settings, 'bevelSize', 0, 6)
-	gui.addColor (settings, 'background_color')
-	gui.addColor (settings, 'foreground_color')
+
+	const shapeFolder = gui.addFolder ('Shape')
+	
+	shapeFolder.add (settings, 'letter_size', 0.1, 400)
+	shapeFolder.add (settings, 'tracking', 0, 600)
+	shapeFolder.add (settings, 'corners', 0, 1)
+	shapeFolder.add (settings, 'depth', 0, 20)
+
+	shapeFolder.close ()
+
+	const colorsFolder = gui.addFolder ('Colours')
+
+	colorsFolder.addColor (settings, 'background_color')
+	colorsFolder.addColor (settings, 'foreground_color')
+
+	colorsFolder.close ()
+
+	const lettersFolder = gui.addFolder ('Letters')
+
+	lettersFolder.add (settings, 't')
+	lettersFolder.add (settings, 'o')
+	lettersFolder.add (settings, 'r')
+	lettersFolder.add (settings, 'u')
+
+	lettersFolder.close ()
+
+	const animationFolder = gui.addFolder ('Animation')
+
+	animationFolder.add (settings, 'forwards')
+	animationFolder.add (settings, 'tween', constants.tween )
+	animationFolder.add (settings, 'speed', 10, 3000)
+
+	animationFolder.close ()
+
+	var obj = { go:startAnimation};
+	gui.add (obj,'go');
 }
 
-function onWindowResize () {
-	windowHalfX = window.innerWidth / 2;
-	camera.aspect = window.innerWidth / window.innerHeight;
-	camera.updateProjectionMatrix ();
-	renderer.setSize( window.innerWidth, window.innerHeight );
-}
+function startAnimation () {
+	console.log (settings.background_color)
+	scene.background = new THREE.Color( settings.background_color );
+	buildLogo ();
 
-function onPointerDown (event) {
+	settings.current_depth = 0
 
-	if ( event.isPrimary === false ) return;
-
-	pointerXOnPointerDown = event.clientX - windowHalfX;
-	targetRotationOnPointerDown = targetRotation;
-
-	document.addEventListener( 'pointermove', onPointerMove );
-	document.addEventListener( 'pointerup', onPointerUp );
-
-}
-
-function onPointerMove (event) {
-	if ( event.isPrimary === false ) return;
-	pointerX = event.clientX - windowHalfX;
-	targetRotation = targetRotationOnPointerDown + ( pointerX - pointerXOnPointerDown ) * 0.02;
-}
-
-function onPointerUp() {
-	if ( event.isPrimary === false ) return;
-	document.removeEventListener( 'pointermove', onPointerMove );
-	document.removeEventListener( 'pointerup', onPointerUp );
+	new TWEEN.Tween(settings)
+				.to ( { current_depth:settings.depth * (settings.forwards ? 1 : -1) }, settings.speed)
+				.easing (settings.tween)
+				.start ()
 }
 
 function animate() {
+	scene.background = new THREE.Color( settings.background_color );
+	logoGroup.rotation.x = settings.current_depth / -500;
+	logoGroup.rotation.y = settings.current_depth / -500;
+
 	requestAnimationFrame( animate );
 	render();
+	TWEEN.update();
 }
 
 function render() {
-	logoGroup.rotation.x += ( targetRotation - logoGroup.rotation.x ) * 0.05;
-	logoGroup.rotation.y += ( targetRotation - logoGroup.rotation.y ) * 0.05;
 	renderer.render( scene, camera );
-
-	scene.background = new THREE.Color (settings.background_color);
-
-	buildLogo ();
 }
+
+buildControls ();
+buildScene ();
+animate ()
