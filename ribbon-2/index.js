@@ -7,12 +7,16 @@ let logoGroup;
 let shapes = [];
 
 let settings = {
-	letter_size : 150,
+	letter_size : 300,
 	tracking : 200,
 	corners : 0.75,
-	depth : 10,
+	depth : 15,
 	background_color : 0xf0f0f0,
 	foreground_color : 0x000000,
+	t:false,
+	o:true,
+	r:false,
+	u:false,
 };
 
 function buildScene () {
@@ -290,7 +294,13 @@ function buildLogo () {
 		logoGroup.remove (shape);
 	})
 
-	shapes = [ getT (), getO (), getR (), getU ()]
+	shapes = []
+
+	if (settings.t) shapes.push (getT ())
+	if (settings.o) shapes.push (getO ())
+	if (settings.r) shapes.push (getR ())
+	if (settings.u) shapes.push (getU ())
+
 	const x_start = (shapes.length - 1) * settings.tracking * -0.5;
 
 	shapes.forEach ((shape, index) => {
@@ -317,6 +327,15 @@ function buildControls () {
 	colorsFolder.addColor (settings, 'foreground_color')
 
 	colorsFolder.close ()
+
+	const lettersFolder = gui.addFolder ('Letters')
+
+	lettersFolder.add (settings, 't')
+	lettersFolder.add (settings, 'o')
+	lettersFolder.add (settings, 'r')
+	lettersFolder.add (settings, 'u')
+
+	lettersFolder.close ()
 
 	var obj = { go:startAnimation};
 	gui.add (obj,'go');
