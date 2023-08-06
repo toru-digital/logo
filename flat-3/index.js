@@ -5,11 +5,11 @@ import { TWEEN } from 'https://unpkg.com/three@0.139.0/examples/jsm/libs/tween.m
 let container;
 let camera, scene, renderer;
 let logoGroup;
-let letter_size = 50
 let shapes = [];
 
 let settings = {
-	tracking : 100,
+	letter_size : 70,
+	tracking : 110,
 	corners : 0.75,
 	background_color : 0xf0f0f0,
 	foreground_color_1 : 0xCCCCCC,
@@ -48,9 +48,9 @@ function buildScene () {
 function getT () {
 	const corner_multiplier = 0.4 + 0.6 * (1-settings.corners);
 
-	const middle = Math.min (letter_size * corner_multiplier, letter_size);
-	const corner = Math.max ((letter_size - middle) * 0.5, 0);
-	const offset = letter_size * -0.5;
+	const middle = Math.min (settings.letter_size * corner_multiplier, settings.letter_size);
+	const corner = Math.max ((settings.letter_size - middle) * 0.5, 0);
+	const offset = settings.letter_size * -0.5;
 
 	const shape = new THREE.Shape()
 		.moveTo (
@@ -66,11 +66,11 @@ function getT () {
 			corner + offset
 		)
 		.lineTo (
-			letter_size + offset,
+			settings.letter_size + offset,
 			corner + offset
 		)
 		.lineTo (
-			letter_size + offset,
+			settings.letter_size + offset,
 			corner + middle + offset
 		)
 		.lineTo (
@@ -79,11 +79,11 @@ function getT () {
 		)
 		.lineTo (
 			corner + middle + offset,
-			letter_size + offset
+			settings.letter_size + offset
 		)
 		.lineTo (
 			corner + offset,
-			letter_size + offset
+			settings.letter_size + offset
 		)
 		.lineTo (
 			corner + offset,
@@ -110,7 +110,7 @@ function getT () {
 }
 
 function getO () {
-	let radius = letter_size * 0.5;
+	let radius = settings.letter_size * 0.5;
 	let segments = 32;
 	let theta, x, y
 	let theta_next, x_next, y_next, j;
@@ -135,9 +135,9 @@ function getO () {
 }
 
 function getR () {
-	const offset = letter_size * -0.5;
+	const offset = settings.letter_size * -0.5;
 
-	const size = letter_size;
+	const size = settings.letter_size;
 	const shape = new THREE.Shape()
 		.moveTo (
 			0 + offset, 
@@ -167,24 +167,24 @@ function getU () {
 
 	const corner_multiplier = settings.corners * 0.3
 
-	const corner = Math.min (letter_size * corner_multiplier, letter_size * 0.25)
-	const offset = letter_size * -0.5;
+	const corner = Math.min (settings.letter_size * corner_multiplier, settings.letter_size * 0.25)
+	const offset = settings.letter_size * -0.5;
 
 	const shape = new THREE.Shape()
-		.moveTo (letter_size - corner * 2 + offset, 0 + offset)
+		.moveTo (settings.letter_size - corner * 2 + offset, 0 + offset)
 		.lineTo (corner * 2 + offset, 0 + offset)
 		.bezierCurveTo (
 			0 + offset, 0 + offset, 
 			0 + offset, corner * 2 + offset, 
 			0 + offset, corner * 2 + offset
 		)
-		.lineTo (0 + offset, letter_size + offset)
-		.lineTo (letter_size + offset, letter_size + offset)
-		.lineTo (letter_size + offset, corner * 2 + offset)
+		.lineTo (0 + offset, settings.letter_size + offset)
+		.lineTo (settings.letter_size + offset, settings.letter_size + offset)
+		.lineTo (settings.letter_size + offset, corner * 2 + offset)
 		.bezierCurveTo (
-			letter_size + offset, corner*2 + offset, 
-			letter_size + offset, 0 + offset, 
-			letter_size - corner * 2 + offset, 0 + offset
+			settings.letter_size + offset, corner*2 + offset, 
+			settings.letter_size + offset, 0 + offset, 
+			settings.letter_size - corner * 2 + offset, 0 + offset
 		)
 
 	return new THREE.ShapeGeometry ( shape );
@@ -259,6 +259,14 @@ function buildControls () {
 	colorsFolder.addColor (settings, 'foreground_color_2')
 
 	colorsFolder.close ()
+
+	const shapeFolder = gui.addFolder ('Shape')
+
+	shapeFolder.add (settings, 'letter_size', 0, 300)
+	shapeFolder.add (settings, 'tracking', 0, 300)
+	shapeFolder.add (settings, 'corners', 0, 1)
+
+	shapeFolder.close ()
 
 	var obj = { go:startAnimation};
 	gui.add (obj,'go');
