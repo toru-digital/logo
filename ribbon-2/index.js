@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+import { TWEEN } from 'https://unpkg.com/three@0.139.0/examples/jsm/libs/tween.module.min.js';
 
 let container;
 let camera, scene, renderer;
@@ -11,6 +12,7 @@ let settings = {
 	tracking : 200,
 	corners : 0.75,
 	depth : 15,
+	current_depth : 0,
 	background_color : 0xf0f0f0,
 	foreground_color : 0x000000,
 	t:false,
@@ -46,6 +48,7 @@ function buildScene () {
 	logoGroup = new THREE.Group ();
 	scene.add (logoGroup);	
 
+	console.log (settings.background_color)
 	scene.background = new THREE.Color( settings.background_color );
 }
 
@@ -342,23 +345,32 @@ function buildControls () {
 }
 
 function startAnimation () {
+	console.log (settings.background_color)
 	scene.background = new THREE.Color( settings.background_color );
 	buildLogo ();
 
-	logoGroup.rotation.x = settings.depth / -500;
-	logoGroup.rotation.y = settings.depth / -500;
+	settings.current_depth = 0
 
-	render ()
+	new TWEEN.Tween(settings)
+				.to ( { current_depth:settings.depth * -1 }, 1000)
+				.easing (TWEEN.Easing.Elastic.Out)
+				.start ()
 }
 
-// function animate() {
-// 	requestAnimationFrame( animate );
-// 	render();
-// }
+function animate() {
+	scene.background = new THREE.Color( settings.background_color );
+	logoGroup.rotation.x = settings.current_depth / -500;
+	logoGroup.rotation.y = settings.current_depth / -500;
+
+	requestAnimationFrame( animate );
+	render();
+	TWEEN.update();
+}
 
 function render() {
 	renderer.render( scene, camera );
 }
 
-buildScene ();
 buildControls ();
+buildScene ();
+animate ()
