@@ -4,11 +4,6 @@ import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 let container;
 let camera, scene, renderer;
 let logoGroup;
-let targetRotation = 0;
-let targetRotationOnPointerDown = 0;
-let pointerX = 0;
-let pointerXOnPointerDown = 0;
-let windowHalfX = window.innerWidth / 2;
 let shapes = [];
 
 let settings = {
@@ -19,11 +14,6 @@ let settings = {
 	background_color : 0xf0f0f0,
 	foreground_color : 0x000000,
 };
-
-buildScene ();
-buildLogo ();
-buildControls ();
-animate ();
 
 function buildScene () {
 	container = document.createElement ('div');
@@ -48,11 +38,6 @@ function buildScene () {
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	container.appendChild( renderer.domElement );
-
-	container.style.touchAction = 'none';
-	container.addEventListener( 'pointerdown', onPointerDown );
-
-	window.addEventListener( 'resize', onWindowResize );
 
 	logoGroup = new THREE.Group ();
 	scene.add (logoGroup);	
@@ -319,52 +304,24 @@ function buildControls () {
 	gui.add (settings, 'corners', 0, 1)
 	gui.addColor (settings, 'background_color')
 	gui.addColor (settings, 'foreground_color')
-	
-	
 }
 
-function onWindowResize () {
-	windowHalfX = window.innerWidth / 2;
-	camera.aspect = window.innerWidth / window.innerHeight;
-	camera.updateProjectionMatrix ();
-	renderer.setSize( window.innerWidth, window.innerHeight );
-}
+// function animate() {
+// 	requestAnimationFrame( animate );
+// 	render();
+// }
 
-function onPointerDown (event) {
+// function render() {
+// 	// logoGroup.rotation.x += ( targetRotation - logoGroup.rotation.x ) * 0.05;
+// 	// logoGroup.rotation.y += ( targetRotation - logoGroup.rotation.y ) * 0.05;
+// 	renderer.render( scene, camera );
 
-	if ( event.isPrimary === false ) return;
+// 	scene.background = new THREE.Color( settings.background_color );
 
-	pointerXOnPointerDown = event.clientX - windowHalfX;
-	targetRotationOnPointerDown = targetRotation;
+// 	buildLogo ();
+// }
 
-	document.addEventListener( 'pointermove', onPointerMove );
-	document.addEventListener( 'pointerup', onPointerUp );
-
-}
-
-function onPointerMove (event) {
-	if ( event.isPrimary === false ) return;
-	pointerX = event.clientX - windowHalfX;
-	targetRotation = targetRotationOnPointerDown + ( pointerX - pointerXOnPointerDown ) * 0.02;
-}
-
-function onPointerUp() {
-	if ( event.isPrimary === false ) return;
-	document.removeEventListener( 'pointermove', onPointerMove );
-	document.removeEventListener( 'pointerup', onPointerUp );
-}
-
-function animate() {
-	requestAnimationFrame( animate );
-	render();
-}
-
-function render() {
-	logoGroup.rotation.x += ( targetRotation - logoGroup.rotation.x ) * 0.05;
-	logoGroup.rotation.y += ( targetRotation - logoGroup.rotation.y ) * 0.05;
-	renderer.render( scene, camera );
-
-	scene.background = new THREE.Color( settings.background_color );
-
-	buildLogo ();
-}
+buildScene ();
+buildLogo ();
+buildControls ();
+// animate ();
