@@ -8,20 +8,20 @@ let logoGroup;
 let shapes = [];
 
 let settings = {
-	letter_size : 300,
+	letter_size : 320,
 	tracking : 400,
 	corners : 0.75,
-	depth : 15,
+	depth : 20,
 	current_depth : 0,
-	background_color : 0xf0f0f0,
-	foreground_color : 0x000000,
-	t:true,
-	o:false,
+	background_color : 0xEDFE06,
+	foreground_color : 0xFFFFFF,
+	t:false,
+	o:true,
 	r:false,
 	u:false,
 	tween: TWEEN.Easing.Quadratic.Out,
-	forwards: true,
-	speed: 1000
+	forwards: false,
+	speed: 800
 };
 
 const constants = {
@@ -385,7 +385,7 @@ function buildControls () {
 
 	animationFolder.add (settings, 'forwards')
 	animationFolder.add (settings, 'tween', constants.tween )
-	animationFolder.add (settings, 'speed' )
+	animationFolder.add (settings, 'speed', 10, 3000)
 
 	animationFolder.close ()
 
