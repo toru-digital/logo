@@ -10,7 +10,7 @@ let settings = {
 	letter_size : 150,
 	tracking : 200,
 	corners : 0.75,
-	depth : 1000,
+	depth : 10,
 	background_color : 0xf0f0f0,
 	foreground_color : 0x000000,
 };
@@ -41,6 +41,8 @@ function buildScene () {
 
 	logoGroup = new THREE.Group ();
 	scene.add (logoGroup);	
+
+	scene.background = new THREE.Color( settings.background_color );
 }
 
 function getCircle (radius, offset_x, offset_y, start, end) {
@@ -108,10 +110,10 @@ function getT () {
 		vertices_3d = vertices_3d.concat ([
 			v1[0] + offset, v1[1] + offset, 0,
 			v2[0] + offset, v2[1] + offset, 0,
-			v2[0] + offset, v2[1] + offset, -1*settings.depth,
+			v2[0] + offset, v2[1] + offset, -1*1000,
 
-			v2[0] + offset, v2[1] + offset, -1*settings.depth,
-			v1[0] + offset, v1[1] + offset, -1*settings.depth,
+			v2[0] + offset, v2[1] + offset, -1*1000,
+			v1[0] + offset, v1[1] + offset, -1*1000,
 			v1[0] + offset, v1[1] + offset, 0
 		])
 	})
@@ -144,10 +146,10 @@ function getO () {
 		vertices_3d = vertices_3d.concat ([
 			v1[0] , v1[1] , 0,
 			v2[0] , v2[1] , 0,
-			v2[0] , v2[1] , -1*settings.depth,
+			v2[0] , v2[1] , -1*1000,
 
-			v2[0] , v2[1] , -1*settings.depth,
-			v1[0] , v1[1] , -1*settings.depth,
+			v2[0] , v2[1] , -1*1000,
+			v1[0] , v1[1] , -1*1000,
 			v1[0] , v1[1] , 0
 		])
 	})
@@ -188,10 +190,10 @@ function getR () {
 		vertices_3d = vertices_3d.concat ([
 			v1[0] + offset, v1[1] + offset, 0,
 			v2[0] + offset, v2[1] + offset, 0,
-			v2[0] + offset, v2[1] + offset, -1*settings.depth,
+			v2[0] + offset, v2[1] + offset, -1*1000,
 
-			v2[0] + offset, v2[1] + offset, -1*settings.depth,
-			v1[0] + offset, v1[1] + offset, -1*settings.depth,
+			v2[0] + offset, v2[1] + offset, -1*1000,
+			v1[0] + offset, v1[1] + offset, -1*1000,
 			v1[0] + offset, v1[1] + offset, 0
 		])
 	})
@@ -259,10 +261,10 @@ function getU () {
 		vertices_3d = vertices_3d.concat ([
 			v1[0] + offset, v1[1] + offset, 0,
 			v2[0] + offset, v2[1] + offset, 0,
-			v2[0] + offset, v2[1] + offset, -1*settings.depth,
+			v2[0] + offset, v2[1] + offset, -1*1000,
 
-			v2[0] + offset, v2[1] + offset, -1*settings.depth,
-			v1[0] + offset, v1[1] + offset, -1*settings.depth,
+			v2[0] + offset, v2[1] + offset, -1*1000,
+			v1[0] + offset, v1[1] + offset, -1*1000,
 			v1[0] + offset, v1[1] + offset, 0
 		])
 	})
@@ -305,6 +307,7 @@ function buildControls () {
 	shapeFolder.add (settings, 'letter_size', 0.1, 400)
 	shapeFolder.add (settings, 'tracking', 0, 600)
 	shapeFolder.add (settings, 'corners', 0, 1)
+	shapeFolder.add (settings, 'depth', 0, 20)
 
 	shapeFolder.close ()
 
@@ -320,7 +323,13 @@ function buildControls () {
 }
 
 function startAnimation () {
-	console.log ("HI")
+	scene.background = new THREE.Color( settings.background_color );
+	buildLogo ();
+
+	logoGroup.rotation.x = settings.depth / -500;
+	logoGroup.rotation.y = settings.depth / -500;
+
+	render ()
 }
 
 // function animate() {
@@ -328,17 +337,9 @@ function startAnimation () {
 // 	render();
 // }
 
-// function render() {
-// 	// logoGroup.rotation.x += ( targetRotation - logoGroup.rotation.x ) * 0.05;
-// 	// logoGroup.rotation.y += ( targetRotation - logoGroup.rotation.y ) * 0.05;
-// 	renderer.render( scene, camera );
-
-// 	scene.background = new THREE.Color( settings.background_color );
-
-// 	buildLogo ();
-// }
+function render() {
+	renderer.render( scene, camera );
+}
 
 buildScene ();
-buildLogo ();
 buildControls ();
-// animate ();
