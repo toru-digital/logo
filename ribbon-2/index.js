@@ -299,11 +299,28 @@ function buildLogo () {
 
 function buildControls () {
 	const gui = new GUI()
-	gui.add (settings, 'letter_size', 0.1, 400)
-	gui.add (settings, 'tracking', 0, 600)
-	gui.add (settings, 'corners', 0, 1)
-	gui.addColor (settings, 'background_color')
-	gui.addColor (settings, 'foreground_color')
+
+	const shapeFolder = gui.addFolder ('Shape')
+	
+	shapeFolder.add (settings, 'letter_size', 0.1, 400)
+	shapeFolder.add (settings, 'tracking', 0, 600)
+	shapeFolder.add (settings, 'corners', 0, 1)
+
+	shapeFolder.close ()
+
+	const colorsFolder = gui.addFolder ('Colours')
+
+	colorsFolder.addColor (settings, 'background_color')
+	colorsFolder.addColor (settings, 'foreground_color')
+
+	colorsFolder.close ()
+
+	var obj = { go:startAnimation};
+	gui.add (obj,'go');
+}
+
+function startAnimation () {
+	console.log ("HI")
 }
 
 // function animate() {
