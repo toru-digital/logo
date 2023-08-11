@@ -1,4 +1,5 @@
 // https://discourse.threejs.org/t/how-to-do-text-mask-and-used-three-js-component-as-a-background/49594/3
+import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 import * as THREE from "three";
 
 console.clear();
@@ -6,8 +7,14 @@ console.clear();
 let gu = {
 	time: { value: 0 },
 	mask: { value: getMask()},
-	color_1 : 0.3
+	color_1 : '0.0',
+	color_2: '0.0',
+	color_3: '0.0',
+	color_4: '1.8',
+	color_5: '0.5',
+	color_6: '1.0',
 };
+
 let scene = new THREE.Mesh(
 	new THREE.PlaneGeometry(2, 2),
 	new THREE.MeshBasicMaterial({
@@ -30,12 +37,13 @@ let scene = new THREE.Mesh(
 			vec3 neonGradient(float t) {
 				return clamp(
 					vec3(
-						t * ` + gu.color_1 + ` + 0.1, 
-						square(abs(0.3 - t) * 1.7), 
-						(1.0 - t) * 1.7), 
-						0.0, 
-						1.0
-					);
+						t * ` + gu.color_1 + ` + ` + gu.color_2 + `, 
+						square(abs(` + gu.color_3 + ` - t) * ` + gu.color_4 + `), 
+						(` + gu.color_5 + ` - t) * ` + gu.color_6 + `
+					), 
+					0.0, 
+					1.0
+				);
 			}
 
 			${noise}
@@ -96,3 +104,13 @@ function getMask(){
 	let tex = new THREE.CanvasTexture(c);
 	return tex;
 }
+
+function buildControls () {
+	const gui = new GUI()
+
+	const colorsFolder = gui.addFolder ('Colours')
+
+	colorsFolder.add (gu, 'color_1', 0, 5)
+}
+
+buildControls ()
