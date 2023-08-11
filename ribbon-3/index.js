@@ -13,7 +13,6 @@ let settings = {
 	corners : 0.75,
 	depth : 20,
 	current_depth : 0,
-	background_color : 0x000000,
 	foreground_color : 0xFFFFFF,
 	t:false,
 	o:true,
@@ -85,12 +84,10 @@ function buildScene () {
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	container.appendChild( renderer.domElement );
+	renderer.setClearColor(0xffffff, 0);
 
 	logoGroup = new THREE.Group ();
-	scene.add (logoGroup);	
-
-	console.log (settings.background_color)
-	scene.background = new THREE.Color( settings.background_color );
+	scene.add (logoGroup);
 }
 
 function getCircle (radius, offset_x, offset_y, start, end) {
@@ -367,7 +364,6 @@ function buildControls () {
 
 	const colorsFolder = gui.addFolder ('Colours')
 
-	colorsFolder.addColor (settings, 'background_color')
 	colorsFolder.addColor (settings, 'foreground_color')
 
 	colorsFolder.close ()
@@ -394,8 +390,6 @@ function buildControls () {
 }
 
 function startAnimation () {
-	console.log (settings.background_color)
-	scene.background = new THREE.Color( settings.background_color );
 	buildLogo ();
 
 	settings.current_depth = 0
@@ -407,7 +401,6 @@ function startAnimation () {
 }
 
 function animate() {
-	scene.background = new THREE.Color( settings.background_color );
 	logoGroup.rotation.x = settings.current_depth / -500;
 	logoGroup.rotation.y = settings.current_depth / -500;
 
