@@ -20,7 +20,8 @@ let settings = {
 	u:false,
 	tween: TWEEN.Easing.Quadratic.Out,
 	forwards: false,
-	speed: 800
+	speed: 800,
+	picture: "/logo/woman-designing.jpg"
 };
 
 const constants = {
@@ -58,6 +59,10 @@ const constants = {
 			"Bounce.In" : TWEEN.Easing.Bounce.In,
 			"Bounce.Out" : TWEEN.Easing.Bounce.Out,
 			"Bounce.InOut" : TWEEN.Easing.Bounce.InOut,
+	},
+	pictures: {
+		"Woman Designing" : "/logo/woman-designing.jpg",
+		"Man Reading" : "/logo/man-reading.jpg",
 	}
 }
 
@@ -365,8 +370,11 @@ function buildControls () {
 	const colorsFolder = gui.addFolder ('Colours')
 
 	colorsFolder.addColor (settings, 'foreground_color')
+	colorsFolder.add (settings, 'picture', constants.pictures ).onChange (function () {
+		document.body.style.backgroundImage = 'url(' + settings.picture + ')'
+	})
 
-	colorsFolder.close ()
+	// colorsFolder.close ()
 
 	const lettersFolder = gui.addFolder ('Letters')
 
@@ -395,7 +403,7 @@ function startAnimation () {
 	settings.current_depth = 0
 
 	new TWEEN.Tween(settings)
-				.to ( { current_depth:settings.depth * (settings.forwards ? 1 : -1) }, settings.speed)
+				.to ({ current_depth:settings.depth * (settings.forwards ? 1 : -1)}, settings.speed)
 				.easing (settings.tween)
 				.start ()
 }
