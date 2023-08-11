@@ -15,6 +15,7 @@ export default defineConfig({
 				ribbon1: resolve(__dirname, 'ribbon-1/index.html'),
 				ribbon2: resolve(__dirname, 'ribbon-2/index.html'),
 				ribbon3: resolve(__dirname, 'ribbon-3/index.html'),
+				ribbon4: resolve(__dirname, 'ribbon-4/index.html'),
 			},
 		},
 	},
