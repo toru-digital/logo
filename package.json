@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/toru-digital/logo#readme",
   "dependencies": {
+    "@theatre/core": "^0.7.0",
+    "@theatre/studio": "^0.7.0",
     "three": "^0.155.0"
   },
   "devDependencies": {
