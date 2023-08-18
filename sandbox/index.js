@@ -351,6 +351,8 @@ function getU() {
   return mesh;
 }
 
+
+
 function buildLogo() {
   shapes.forEach((shape) => {
     logoGroup.remove(shape);
@@ -415,10 +417,8 @@ function onWindowResize() {
 
 function onPointerDown(event) {
   if (event.isPrimary === false) return;
-
   pointerXOnPointerDown = event.clientX - windowHalfX;
   targetRotationOnPointerDown = targetRotation;
-
   document.addEventListener("pointermove", onPointerMove);
   document.addEventListener("pointerup", onPointerUp);
 }
