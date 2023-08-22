@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/toru-digital/logo#readme",
   "dependencies": {
+    "cannon": "^0.6.2",
+    "lil-gui": "^0.18.2",
     "three": "^0.155.0"
   },
   "devDependencies": {

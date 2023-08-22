@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scroll based 1</title>
+    <link rel="stylesheet" href="./style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white">
+    <header class="h-14 bg-white w-full fixed z-50 border-b-2 border-black">
+
+    </header>
+    <canvas class="webgl fixed top-0 left-0 outline-none"></canvas>
+    <section class="flex items-center justify-center h-screen relative">
+
+        <div class="wrapper relative w-full mx-5xl mx-auto my-0 ">
+            <video class="w-full" autoplay playsinline muted loop preload poster="http://i.imgur.com/xHO6DbC.png">
+            <source src="../static/video/coding-video-2.mp4" />
+            </video>
+          <svg class="absolute top-0 left-0 w-full h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 125 70" preserveAspectRatio="xMidYMid slice">
+            <defs>
+              <mask id="mask" x="0" y="0" width="100%" height="100%" >
+                <rect x="0" y="0" width="100%" height="100%" />
+                <path d="M0 4.6H4.6V0H19.4V4.6H24V19.4H19.4V24H4.6V19.4H0V4.6Z" fill="black"/>
+                <circle cx="43.2" cy="12" r="12" fill="black"/>
+                <path d="M94.5231 14.7692C94.5231 19.8672 98.6559 24 103.754 24L110.215 24C115.313 24 119.446 19.8672 119.446 14.7692L119.446 -1.29347e-07L94.5231 0L94.5231 14.7692Z" fill="black"/>
+                <path d="M62.4 0H87.3231V24H62.4V0Z" fill="black"/>
+              </mask>
+            </defs>
+            <rect x="0" y="0" width="100%" height="100%" />
+          </svg>
+        </div>
+
+    </section>
+
+
+    <script type="module" src="./script.js"></script>
+</body>
+</html>
