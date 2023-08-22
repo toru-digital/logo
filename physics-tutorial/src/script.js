@@ -6,9 +6,50 @@ import CANNON from 'cannon'
 THREE.ColorManagement.enabled = false
 
 /**
+ * Settings
+ */
+let settings = {
+    letter_size: 150,
+    tracking: 200,
+    corners: 0.75,
+    depth: 100,
+    background_color: 0x0000,
+    foreground_color: 0xffffff,
+  };
+
+/**
  * Debug
  */
 const gui = new dat.GUI()
+const debugObject = {}
+
+debugObject.createSphere = () =>
+{
+    // createSphere(
+    //     Math.random() * 0.5,
+    //     {
+    //         x: (Math.random() - 0.5) * 3,
+    //         y: 3,
+    //         z: (Math.random() - 0.5) * 3
+    //     }
+    // )
+
+    createLetter(    {
+        x: (Math.random() - 0.5) * 3,
+        y: 3,
+        z: (Math.random() - 0.5) * 3
+    })
+}
+
+gui.add(debugObject, 'createSphere')
+
+debugObject.createLetter = () =>
+{
+    createLetter(0.5, { x: 0, y: 3, z: 0 })
+}
+
+gui.add(debugObject, 'createLetter')
+
 
 /**
  * Base
@@ -57,18 +98,7 @@ const defaultContactMaterial = new CANNON.ContactMaterial(
 world.addContactMaterial( defaultContactMaterial)
 world.defaultContactMaterial = defaultContactMaterial
 
-const sphereShape = new CANNON.Sphere(0.5)
-const sphereBody = new CANNON.Body({
-    mass: 1,
-    position: new CANNON.Vec3(0, 3, 0),
-    shape: sphereShape,
-})
-sphereBody.applyLocalForce(new CANNON.Vec3(150, 0, 0), new CANNON.Vec3(0, 0, 0))
 
-world.addBody(sphereBody)
-
-
-//you need to update the cannon js world using steps()
 
 
 // physics floor
@@ -85,18 +115,7 @@ world.addBody(floorBody)
 /**
  * Test sphere
  */
-const sphere = new THREE.Mesh(
-    new THREE.SphereGeometry(0.5, 32, 32),
-    new THREE.MeshStandardMaterial({
-        metalness: 0.3,
-        roughness: 0.4,
-        envMap: environmentMapTexture,
-        envMapIntensity: 0.5
-    })
-)
-sphere.castShadow = true
-sphere.position.y = 0.5
-scene.add(sphere)
+
 
 /**
  * Floor
@@ -181,6 +200,157 @@ renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 /**
+ * Utils
+ */
+const objectsToUpdate = []
+
+const createLetter = (position) =>
+{
+
+    // Three.js mesh
+    const corner_multiplier = 0.4 + 0.6 * (1 - settings.corners);
+
+  const middle = Math.min(
+    settings.letter_size * corner_multiplier,
+    settings.letter_size
+  );
+  const corner = Math.max((settings.letter_size - middle) * 0.5, 0);
+  const offset = settings.letter_size * -0.5;
+
+  const vertices_2d = [
+    [corner, 0],
+    [corner + middle, 0],
+    [corner + middle, corner],
+    [settings.letter_size, corner],
+    [settings.letter_size, corner + middle],
+    [corner + middle, corner + middle],
+    [corner + middle, settings.letter_size],
+    [corner, settings.letter_size],
+    [corner, corner + middle],
+    [0, corner + middle],
+    [0, corner],
+    [corner, corner],
+  ];
+
+  let vertices_3d = [];
+
+  vertices_2d.forEach((v, index) => {
+    const v1 = v;
+    const v2 = vertices_2d[(index + 1) % vertices_2d.length];
+
+    vertices_3d = vertices_3d.concat([
+      v1[0] + offset,
+      v1[1] + offset,
+      0,
+      v2[0] + offset,
+      v2[1] + offset,
+      0,
+      v2[0] + offset,
+      v2[1] + offset,
+      -1 * settings.depth,
+
+      v2[0] + offset,
+      v2[1] + offset,
+      -1 * settings.depth,
+      v1[0] + offset,
+      v1[1] + offset,
+      -1 * settings.depth,
+      v1[0] + offset,
+      v1[1] + offset,
+      0,
+    ]);
+  });
+
+  const geometry = new THREE.BufferGeometry();
+
+  geometry.setAttribute(
+    "position",
+    new THREE.BufferAttribute(new Float32Array(vertices_3d), 3)
+  );
+
+//   let mesh = new THREE.Mesh(
+//     geometry,
+//     new THREE.MeshBasicMaterial({
+//       side: THREE.DoubleSide,
+//       color: settings.foreground_color,
+//     })
+//   );
+
+  const mesh = new THREE.Mesh(
+    geometry,
+    new THREE.MeshStandardMaterial({
+        metalness: 0.3,
+        roughness: 0.4,
+        envMap: environmentMapTexture,
+        envMapIntensity: 0.5
+    })
+)
+
+    mesh.castShadow = true
+    mesh.position.copy(position)
+    scene.add(mesh)
+
+
+    // Cannon.js body
+    const shape = new CANNON.Box(new CANNON.Vec3(1, 1, 1))
+    const body = new CANNON.Body({
+        mass: 1,
+        position: new CANNON.Vec3(0,3,0),
+        shape,
+        material: defaultMaterial
+    })
+
+    body.position.copy(position)
+    world.addBody(body)
+
+    objectsToUpdate.push({
+        mesh,
+        body
+    })
+}
+
+createLetter({ x: 0, y: 3, z: 0 })
+
+const createSphere = (radius, position) =>
+{
+
+    // Three.js mesh
+    const mesh = new THREE.Mesh(
+        new THREE.SphereGeometry(radius, 20, 20),
+        new THREE.MeshStandardMaterial({
+            metalness: 0.3,
+            roughness: 0.4,
+            envMap: environmentMapTexture,
+            envMapIntensity: 0.5
+        })
+    )
+    mesh.castShadow = true
+    mesh.position.copy(position)
+    scene.add(mesh)
+
+
+    // Cannon.js body
+    const shape = new CANNON.Sphere(radius)
+    const body = new CANNON.Body({
+        mass: 1,
+        position: new CANNON.Vec3(0,3,0),
+        shape,
+        material: defaultMaterial
+    })
+
+    body.position.copy(position)
+    world.addBody(body)
+
+    // save in objects array
+    objectsToUpdate.push({
+        mesh,
+        body
+    })
+} 
+
+createSphere(0.5, { x: 0, y: 3, z: 0 })
+
+/**
  * Animate
  */
 const clock = new THREE.Clock()
@@ -192,13 +362,15 @@ const tick = () =>
     const deltaTime = elapsedTime - oldElapsedTime
     oldElapsedTime = elapsedTime
 
-    //physics world steps
-    sphereBody.applyLocalForce(new CANNON.Vec3(-0.5, 0, 0), sphereBody.position) // this applies a wind effect to the sphere
-    world.step(1/60, elapsedTime, 3)
+    // physics
+    world.step(1/60, deltaTime, 3)
 
-    sphere.position.copy(sphereBody.position)
 
-    // console.log(sphereBody.position.y)
+    // To display the objects in the scene 
+    for(const object of objectsToUpdate){
+        object.mesh.position.copy(object.body.position)
+    }
+
 
     // Update controls
     controls.update()

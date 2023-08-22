@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/toru-digital/logo#readme",
   "dependencies": {
+    "@studio-freight/lenis": "^1.0.19",
     "cannon": "^0.6.2",
     "lil-gui": "^0.18.2",
     "three": "^0.155.0"

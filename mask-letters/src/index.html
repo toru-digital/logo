@@ -7,12 +7,12 @@
     <link rel="stylesheet" href="./style.css">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-white">
+<body class="bg-white overflow-hidden">
     <header class="h-14 bg-white w-full fixed z-50 border-b-2 border-black">
 
     </header>
-    <canvas class="webgl fixed top-0 left-0 outline-none"></canvas>
-    <section class="flex items-center justify-center h-screen relative">
+ 
+    <section class="flex items-center justify-center pt-[40rem] relative">
 
         <div class="wrapper relative w-full mx-5xl mx-auto my-0 ">
             <video class="w-full" autoplay playsinline muted loop preload poster="http://i.imgur.com/xHO6DbC.png">
@@ -22,17 +22,73 @@
             <defs>
               <mask id="mask" x="0" y="0" width="100%" height="100%" >
                 <rect x="0" y="0" width="100%" height="100%" />
-                <path d="M0 4.6H4.6V0H19.4V4.6H24V19.4H19.4V24H4.6V19.4H0V4.6Z" fill="black"/>
-                <circle cx="43.2" cy="12" r="12" fill="black"/>
-                <path d="M94.5231 14.7692C94.5231 19.8672 98.6559 24 103.754 24L110.215 24C115.313 24 119.446 19.8672 119.446 14.7692L119.446 -1.29347e-07L94.5231 0L94.5231 14.7692Z" fill="black"/>
-                <path d="M62.4 0H87.3231V24H62.4V0Z" fill="black"/>
+                <path d="M0 4.6H4.6V0H19.4V4.6H24V19.4H19.4V24H4.6V19.4H0V4.6Z" fill="black" class="t" />
+                <circle cx="43.2" cy="12" r="12" fill="black" class="o" />
+                <path d="M94.5231 14.7692C94.5231 19.8672 98.6559 24 103.754 24L110.215 24C115.313 24 119.446 19.8672 119.446 14.7692L119.446 -1.29347e-07L94.5231 0L94.5231 14.7692Z" fill="black" class="r"/>
+                <path d="M62.4 0H87.3231V24H62.4V0Z" fill="black" class="u"/>
               </mask>
             </defs>
             <rect x="0" y="0" width="100%" height="100%" />
           </svg>
         </div>
+    </section>
+
+    <section class="flex items-center justify-center pt-52 relative ">
+      <!-- <svg class="separator separator--up" width="100%" height="100%" viewBox="0 0 100 10" preserveAspectRatio="none">
+        <path 
+          class="separator__path path-anim" 
+          d="M 0 0 C 40 0 60 0 100 0 L 0 0 Z" 
+          data-path-to="M 0 0 C 40 10 60 10 100 0 L 0 0 Z" 
+          vector-effect="non-scaling-stroke" 
+        />
+      </svg> -->
+
+      <svg class="image-clip" width="500px" height="750px" viewBox="0 0 500 750">
+        <defs>
+          <clipPath id="shape1">
+            <path 
+              class="path-anim" 
+              d="M 0 0 L 500 0 C 500 599.6 500 677.1 500 750 L 0 750 C 0 205 0 105 0 0 Z"
+              data-path-to="M 0 0 L 500 0 C 331 608 485 551 500 750 L 0 750 C 120 281 7 296 0 0 Z" 
+            />
+          </clipPath>
+        </defs>
+        <image 
+          clip-path="url(#shape1)" 
+          xlink:href="2.png" 
+          x="0" y="0" 
+          width="500" 
+          height="750"
+        />
+      </svg>
 
     </section>
+    <section class="flex items-center justify-center h-screen pt-52 relative ">
+      <canvas class="webgl fixed top-0 left-0 outline-none"></canvas>
+
+    </section>
+<section class="flex flex-col items-center justify-center h-screen bg-slate-200 relative">
+    <svg class="absolute" width="3428" height="360" viewBox="0 0 563 113" fill="none" xmlns="http://www.w3.org/2000/svg" class="mx-12">
+      <path d="M0 21.6583H21.6583V0H91.3417V21.6583H113V91.3417H91.3417V113H21.6583V91.3417H0V21.6583Z" fill="black" class="z-50"/>
+      <circle cx="203.4" cy="56.5" r="56.5" fill="black"/>
+      <path d="M445.046 69.5385C445.046 93.5416 464.505 113 488.508 113L518.931 113C542.934 113 562.392 93.5416 562.392 69.5385L562.392 -6.0901e-07L445.046 0L445.046 69.5385Z" fill="black"/>
+      <path d="M293.8 0H411.146V113H293.8V0Z" fill="black"/>
+      </svg>
+</section>
+
+<section class="flex flex-col items-center justify-center   relative">
+  <div class="backdrop-blur bg-white/50 w-52 h-52 mx-auto  rounded-lg">
+
+  </div>
+</section>
+
+
+<section class="flex flex-col  items-center justify-center h-screen bg-slate-200 relative">
+  <h1 class="text-4xl mx-[10%] text-center">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</h1>
+  <div class="pt-32 mx-[10%] text-right w-1/2">
+    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</p>
+  </div>
+</section>
 
 
     <script type="module" src="./script.js"></script>
