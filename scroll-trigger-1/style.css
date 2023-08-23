@@ -1,0 +1,126 @@
+@font-face {
+  font-family: Aeonik Trial;
+  src: url("assets/font/aeoniktrial-bold.otf") format("opentype");
+}
+
+@font-face {
+  font-family: Aeonik Trial light;
+  src: url("assets/font/aeoniktrial-light.otf") format("opentype");
+}
+* {
+  margin: 0;
+  padding: 0;
+}
+::-webkit-scrollbar {
+  display: none;
+}
+body {
+  overflow-x: hidden;
+  font-family: "Aeonik Trial";
+  text-transform: uppercase;
+  background: #5cd0f6;
+  color: black;
+}
+
+.upper-container {
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  justify-content: center;
+  flex-direction: column;
+  font-weight: lighter;
+  display: flex;
+}
+
+.upper-container span,
+.upper-container h1 {
+  padding: 10px 50px;
+}
+
+.upper-container span {
+  font-size: 20px;
+}
+
+.upper-container h1 {
+  font-size: 80px;
+  line-height: 1;
+}
+
+.imageBoard {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.imageBoard .cardImage {
+  opacity: 0;
+  height: 50vh;
+}
+
+.scaleableImg {
+  position: absolute;
+  width: 250px;
+}
+
+#scaleableImg1 {
+  top: 35%;
+  left: 20%;
+}
+
+#scaleableImg2 {
+  top: 35%;
+  left: 35%;
+}
+#scaleableImg3 {
+  top: 35%;
+  left: 50%;
+}
+#scaleableImg4 {
+  top: 35%;
+  left: 65%;
+}
+/* #scaleableImg5 {
+  top: 30%;
+  left: 55%; 
+} */
+
+.cardImage {
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  background: var(--toru-dark-blue, #03121d);
+  color: var(--white, #fff);
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.card-image {
+  width: -100%;
+}
+
+.small-text {
+  font-family: "Aeonik Trial light";
+  font-weight: 300;
+  font-size: 5px;
+  width: 271.791px;
+  color: #f2f2f2;
+  font-weight: 100;
+  line-height: 125%;
+  text-align: right;
+  text-transform: lowercase;
+  display: flex;
+  flex-direction: column;
+}
+
+.letter__u {
+  display: inline-block;
+  width: 24px;
+  background: url('assets/images/letter-u-bg.png'), lightgray 50% / cover;
+}

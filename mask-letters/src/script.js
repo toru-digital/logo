@@ -3,6 +3,8 @@ import * as dat from "lil-gui";
 import gsap from "gsap";
 import Lenis from "@studio-freight/lenis";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { SVGRenderer,  SVGObject  } from 'three/addons/renderers/SVGRenderer.js';
+
 gsap.registerPlugin(ScrollTrigger);
 THREE.ColorManagement.enabled = false;
 let settings = {
@@ -14,11 +16,13 @@ let settings = {
   foreground_color: 0xffffff,
 };
 
+
+
 /**
  * Debug
  */
 const parameters = {
-  materialColor: "#00000",
+  materialColor: "#ffffff",
 };
 
 /**
@@ -359,6 +363,22 @@ const mesh1 = new THREE.Mesh(new THREE.IcosahedronGeometry(1, 0), material);
 const mesh2 = new THREE.Mesh(new THREE.TorusGeometry(1, 0.4, 16, 60), material);
 const mesh3 = new THREE.Mesh(new THREE.TorusGeometry(1, 0.4, 16, 60), material);
 
+const fileLoader = new THREE.FileLoader();
+fileLoader.load( 'static/svg/logo.svg', function ( svg ) {
+
+  const node = document.createElementNS( 'http://www.w3.org/2000/svg', 'g' );
+  const parser = new DOMParser();
+  const doc = parser.parseFromString( svg, 'image/svg+xml' );
+
+  node.appendChild( doc.documentElement );
+
+  const object = new SVGObject( node );
+  object.position.x = 500;
+  scene.add( object );
+
+} );
+
+
 mesh1.position.x = 2;
 mesh2.position.x = -2;
 mesh3.position.x = 2;
@@ -538,8 +558,9 @@ gsap.to(".t", {
 
 gsap.to(".o", {
   duration: 5,
-  x: 0,
-  y: 20,
+  x: -80,
+  y: -20,
+  scale: 9,
   ease: "power2.inOut",
   scrollTrigger: { trigger: ".o" , start:"top center", markers:true},
 });
@@ -551,7 +572,6 @@ gsap.to(".r", {
   ease: "power2.inOut",
   scrollTrigger: { trigger: ".o" , start:"top center", markers:true},
 });
-
 
 gsap.to(".u", {
   duration: 5,
@@ -631,3 +651,5 @@ function raf(time) {
 }
 
 requestAnimationFrame(raf);
+
+
