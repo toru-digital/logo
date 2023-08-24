@@ -72,9 +72,21 @@ body {
   opacity: 0;
 }
 
+#scaleableImg1-2 {
+  top: 35%;
+  left: 20%;
+  opacity: 0;
+}
+
 #scaleableImg2 {
   top: 35%;
   left: 20%;
+  opacity: 0;
+}
+
+#scaleableImg2-2 {
+  top: 35%;
+  left: 36%;
   opacity: 0;
 }
 
@@ -84,11 +96,24 @@ body {
   opacity: 0;
 }
 
+#scaleableImg3-2 {
+  top: 35%;
+  left: 52%;
+  opacity: 0;
+}
+
 #scaleableImg4 {
   top: 35%;
   left: 50%;
   opacity: 0;
   /* left: 65%; */
+}
+
+#scaleableImg4-2 {
+  top: 35%;
+  left: 68%;
+  opacity: 0;
+
 }
 /* #scaleableImg5 {
   top: 30%;

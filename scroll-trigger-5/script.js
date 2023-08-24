@@ -19,17 +19,16 @@ gsap
     {
       opacity: 1,
       transformOrigin: "center",
-      attr:{fill:"red"}
-
+      attr: { fill: "red" },
     },
     "start"
   )
   .to(
     "#scaleableImg2",
     {
-      delay: .5,
+      delay: 0.5,
       opacity: 1,
-      x:300,
+      x: 300,
       fill: "red",
     },
     "start"
@@ -37,33 +36,98 @@ gsap
   .to(
     "#scaleableImg3",
     {
-      delay:1,
+      delay: 1,
       opacity: 1,
-      x:300,
-
+      x: 300,
     },
     "start"
   )
   .to(
     "#scaleableImg4",
     {
-      delay:1.5,
+      delay: 1.5,
       opacity: 1,
-      x:300,
+      x: 300,
     },
     "start"
   )
   .to(
     "#scaleableImg1",
     {
-      delay:2,
-      scale: 0.2,
+      delay: 2,
+      scaleX: -1,
+      opacity: 0,
       transformOrigin: "center",
-
     },
     "start"
   )
-
+  .to(
+    "#scaleableImg1-2",
+    {
+      delay: 2.5,
+      transformOrigin: "center",
+      opacity: 1,
+      scale: 1,
+    },
+    "start"
+  )
+  .to(
+    "#scaleableImg2",
+    {
+      delay: 2.3,
+      scaleX: -1,
+      opacity: 0,
+      transformOrigin: "center",
+    },
+    "start"
+  )
+  .to(
+    "#scaleableImg2-2",
+    {
+      delay: 2.7,
+      transformOrigin: "center",
+      opacity: 1,
+    },
+    "start"
+  )
+  .to(
+    "#scaleableImg3",
+    {
+      delay: 2.6,
+      scaleX: -1,
+      opacity: 0,
+      transformOrigin: "center",
+    },
+    "start"
+  )
+  .to(
+    "#scaleableImg3-2",
+    {
+      delay: 2.9,
+      transformOrigin: "center",
+      opacity: 1,
+    },
+    "start"
+  )
+  .to(
+    "#scaleableImg4",
+    {
+      delay: 2.8,
+      scaleX: -1,
+      opacity: 0,
+      transformOrigin: "center",
+    },
+    "start"
+  )
+  .to(
+    "#scaleableImg4-2",
+    {
+      delay: 3.1,
+      transformOrigin: "center",
+      opacity: 1,
+    },
+    "start"
+  )
   .to(
     ".cardImage",
     {
@@ -78,15 +142,9 @@ gsap
       delay: 0.4,
       opacity: 1,
     },
-    
+
     "start"
-  )
-
- 
-  
-
-
-
+  );
 
 const textContainers = document.querySelector(".word");
 
@@ -116,7 +174,3 @@ textContainers.addEventListener("mousemove", (e) => {
     });
   });
 });
-
-
-
-
