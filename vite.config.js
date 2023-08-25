@@ -14,6 +14,7 @@ export default defineConfig({
 				flat2: resolve(__dirname, 'flat-2/index.html'),
 				ribbon1: resolve(__dirname, 'ribbon-1/index.html'),
 				ribbon2: resolve(__dirname, 'ribbon-2/index.html'),
+				ribbon2: resolve(__dirname, 'scroll-trigger/index.html'),
 			},
 		},
 	},
