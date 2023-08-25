@@ -17,26 +17,6 @@ gsap
       ease: "none",
     },
   })
-  .to(".logo-text", {
-    y: -550,
-    scale: 0.1,
-    position: "fixed",
-    zIndex: 100,
-    color: "#83DDB6",
-  })
-  .to(".small-logo", {
-    opacity: 1,
-    scale: 1,
-    y: -50,
-  })
-  .to(
-    ".webgl-logo",
-    {
-     display: "block",
-     opacity: 1,
-     ease: "slow.out",
-    }
-  )
   .from(
     ".hr",
     8,
@@ -151,7 +131,7 @@ gsap.to(
   ".clip-top .marquee, .clip-bottom .marquee, .clip-center .marquee span,.logo-text-marquee",
   1,
   {
-    delay: 6,
+    delay: 5,
     opacity: 0,
     ease: "power2.inOut",
   }
@@ -166,6 +146,122 @@ gsap.to(
     ease: "power2.inOut",
   }
 );
+
+gsap.to(
+  ".flat-t",
+  1,
+  {
+    delay: 6,
+    opacity: 1,
+    x: -328,
+    y: -75,
+    scale: 2.2,
+    ease: "power2.inOut",
+  }
+);
+
+gsap.to(
+  ".flat-t",
+  1,
+  {
+    delay: 7.5,
+    opacity: 0,
+    x: -328,
+    y: -75,
+    scale: 2,
+    ease: "power2.inOut",
+  }
+);
+
+gsap.to(
+  ".flat-o",
+  1,
+  {
+    delay: 6,
+    opacity: 1,
+    x: -160,
+    y: -78,
+    scale: 2.2,
+    ease: "power2.inOut",
+  }
+);
+
+gsap.to(
+  ".flat-o",
+  1,
+  {
+    delay: 7.5,
+    opacity: 0,
+    x: -160,
+    y: -78,
+    scale: 2,
+    ease: "power2.inOut",
+  }
+);
+
+gsap.to(
+  ".flat-r",
+  1,
+  {
+    delay: 6,
+    opacity: 1,
+    x: 10,
+    y: -74,
+    scale: 2.2,
+    ease: "power2.inOut",
+  }
+);
+
+gsap.to(
+  ".flat-r",
+  1,
+  {
+    delay: 7.5,
+    opacity: 0,
+    x: 10,
+    y: -74,
+    scale: 2,
+    ease: "power2.inOut",
+  }
+);
+
+gsap.to(
+  ".flat-u",
+  1,
+  {
+    delay: 6,
+    opacity: 1,
+    x: 180,
+    y: -73,
+    scale: 2.2,
+    ease: "power2.inOut",
+  },
+);
+
+gsap.to(
+  ".flat-u",
+  1,
+  {
+    delay: 7.5,
+    opacity: 0,
+    x: 180,
+    y: -80,
+    scale: 1.9,
+    ease: "power2.inOut",
+  },
+);
+
+
+gsap.to(
+  ".webgl-logo",
+  1,
+  {
+    delay: 7,
+   display: "block",
+   opacity: 1,
+   ease: "slow.out",
+  }
+)
 
 
 

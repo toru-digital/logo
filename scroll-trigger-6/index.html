@@ -12,12 +12,35 @@
   </head>
   <body>
     <!-- add three js model -->
-  <div class="loader w-screen h-screen">
-      <h1 class="logo-text absolute z-50">logo</h1>
-      <canvas class="webgl-logo absolute hidden opacity-0"></canvas>
-      <div
-        class="loader-clip clip-top absolute w-screen h-[33.3vh] overflow-clip z-[5] top-0 [clip-path:inset(0 0 0 0)] bg-[#e2e2e2]"
-      >
+    <canvas class="webgl-logo  top-0 left-0 z-[9999] absolute opacity-0 w-screen "></canvas>
+
+  <div class="loader relative w-screen h-screen">
+      <div class="logo-text z-50 flex opacity-0">
+        <!-- letter-t -->
+        <svg width="130"  height="130" class="flat-t absolute" viewBox="0 0 130 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path id="+" d="M0 24.9167H24.9167V0H105.083V24.9167H130V105.083H105.083V130H24.9167V105.083H0V24.9167Z" fill="white"/>
+          </svg>
+
+          <!-- letter o -->
+          <svg width="146" height="145" class="flat-o absolute" viewBox="0 0 146 145" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle id="o" cx="72.5859" cy="72.5" r="72.5" fill="white"/>
+            </svg>
+            
+
+            <!-- letter r -->
+            <svg width="135" height="130" class="flat-r absolute" viewBox="0 0 135 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path id="r" d="M0 0H135V130H0V0Z" fill="white"/>
+              </svg>
+
+
+              <!-- letter u -->
+              <svg width="135" height="130" class="flat-u absolute" viewBox="0 0 135 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M-2.59493e-07 80C-1.16179e-07 107.614 22.3858 130 50 130L85 130C112.614 130 135 107.614 135 80L135 -7.00631e-07L-6.74682e-07 0L-2.59493e-07 80Z" fill="white"/>
+                </svg>
+                
+          
+      </div>
+      <div class="loader-clip clip-top absolute w-screen h-[33.3vh] overflow-clip z-[5] top-0 [clip-path:inset(0 0 0 0)] bg-[#e2e2e2]">
         <div
           class="marquee absolute top-[200%] left-2/4 -translate-x-1/2 -translate-y-1/2 w-[200vw] mix-blend-difference"
         >
@@ -332,7 +355,9 @@
                 <path d="M254 0H371.346V113H254V0Z" fill="white" />
               </svg>
             </span>
-            <h1 class="logo-text-marquee">logo</h1>
+            <div class="w-[1000px]">
+
+            </div>
             <span>
               <svg
                 width="503"
@@ -490,7 +515,7 @@
         <div class="hr"></div>
       </section>
     </section>
-    <section class="bg-[#141414] h-[50vh] w-screen"></section>
+    <section class=" h-[50vh] w-screen"></section>
     <section class="next-section  h-screen w-screen flex flex-col justify-center items-center">
       <h2 class="h2-statement uppercase text-center pt-52 text-9xl max-w-[70%]  z-10">digital pioneers and innovation engineers</h2>
 
@@ -722,7 +747,7 @@
 
     </section>
 
-    <section class="bg-black h-screen w-screen">
+    <section class=" h-screen w-screen">
       <div class="h">
         
       </div>
