@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/toru-digital/logo#readme",
   "dependencies": {
+    "gsap": "^3.12.2",
     "three": "^0.155.0"
   },
   "devDependencies": {
