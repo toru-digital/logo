@@ -4,12 +4,14 @@ body {
 	display : flex;
 	width: 100vw;
 	height: 100vh;
-}	
+}
+
 #controls-container {
 	align-items: stretch;
 	width:140px;
 	padding:10px 10px;
 	font-family: sans-serif;
+	display : none;
 }
  
 label {
