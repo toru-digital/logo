@@ -33,78 +33,71 @@ const settings = {
 }
 
 let scheme = "white-on-black"
-const shapes = []
 
 const draw = SVG().addTo('#logo-container')
 
-const drawLogo = () => {
-	const drawT = () => {
-		const s1 = settings.size;
-		const s2 = settings.size * 0.2 * settings.growth;
-		const s3 = s1 - s2;
+const drawT = () => {
+	const s1 = settings.size;
+	const s2 = settings.size * 0.2 * settings.growth;
+	const s3 = s1 - s2;
 
-		return draw
-			.path(`M ${s2}  0 L ${s3} 0 L ${s3} ${s2} L ${s1} ${s2} L ${s1} ${s3} L ${s3} ${s3} L ${s3} ${s1} L ${s2} ${s1} L ${s2} ${s3} L 0 ${s3} L 0 ${s2} L ${s2} ${s2} L ${s2} 0`)
-			.attr({fill: colours[scheme].logo})
-	}
+	draw.defs().group ().addClass('letter-0')
+		.path(`M ${s2}  0 L ${s3} 0 L ${s3} ${s2} L ${s1} ${s2} L ${s1} ${s3} L ${s3} ${s3} L ${s3} ${s1} L ${s2} ${s1} L ${s2} ${s3} L 0 ${s3} L 0 ${s2} L ${s2} ${s2} L ${s2} 0`)
+		
+}
 
-	const drawO = () => {
-		return draw
-			.rect(settings.size, settings.size)
-			.radius(settings.size * 0.5 * settings.growth, settings.size * 0.5 * settings.growth)
-			.attr({fill: colours[scheme].logo})
-	}
+const drawO = () => {
+	return draw.defs().group ().addClass('letter-1')
+		.rect(settings.size, settings.size)
+		.radius(settings.size * 0.5 * settings.growth, settings.size * 0.5 * settings.growth)
+}
 
-	const drawR = () => {
-		return draw.rect(settings.size, settings.size)
-			.attr({fill: colours[scheme].logo})
-	}
+const drawR = () => {
+	draw.defs().group ().addClass('letter-2')
+		.rect(settings.size, settings.size)
+}
 
-	const drawU = () => {
-		const s1 = settings.size
-		const s2 = s1 / 3
-		const s3 = s1 - s2
-		const s4 = s1 * 0.15 * settings.growth
-		const s5 = s1 - s4
-  
-		return draw.path(`
-			M 0 0 
-			H ${s1} 
-			V ${s3} 
-			C ${s1} ${s5} ${s5} ${s1} ${s3} ${s1} 
-			H ${s2} 
-			C ${s4} ${s1} 0 ${s5} 0 ${s3}`
-			).attr({fill: colours[scheme].logo})
-	 }
+const drawU = () => {
+	const s1 = settings.size
+	const s2 = s1 / 3
+	const s3 = s1 - s2
+	const s4 = s1 * 0.15 * settings.growth
+	const s5 = s1 - s4
 
-	shapes[0] = drawT ()
-	shapes[1] = drawO ()
-	shapes[2] = drawR ()
-	shapes[3] = drawU ()
+	draw.defs ().group ().addClass('letter-3')
+		.path(`
+		M 0 0 
+		H ${s1} 
+		V ${s3} 
+		C ${s1} ${s5} ${s5} ${s1} ${s3} ${s1} 
+		H ${s2} 
+		C ${s4} ${s1} 0 ${s5} 0 ${s3}`
+	)
 }
 
 const drawGrid = () => {
+
 	const container_width = document.getElementById("logo-container").getElementsByTagName("svg")[0].clientWidth
 
 	const container_height = document.getElementById("logo-container").getElementsByTagName("svg")[0].clientHeight
 	
-	const start = 40;
+	const start = 0;
 	const spacer = settings.padding + settings.size;
 	
 	const num_cols = Math.ceil (container_width / (settings.size + settings.padding))
 	const num_rows = Math.ceil (container_height / (settings.size + settings.padding))
 
-	let shape_index
-	
+	let shape_class
 	for (let x = 0; x < num_cols; x++) {
 		for (let y = 0; y < num_rows; y++) {
-			shape_index = Math.floor(Math.random() * 4)
-			// console.log (shape_index, shapes[shape_index])
-			console.log (start + x * spacer, start + y * spacer)
-			draw.use (shapes[shape_index]).show ().move (
+			shape_class = ".letter-" + Math.floor(Math.random() * 4)
+			console.log (x,y, shape_class)
+
+			draw.use (draw.defs().findOne(shape_class))
+			.attr({fill: 'white'})
+			.move (
 				start + x * spacer, 
-				start + y * spacer
-			).attr({fill: "red"})
+				start + y * spacer )
 		}
 	}
 }
@@ -116,7 +109,10 @@ const setColours = s => {
 	Array.from(document.getElementsByClassName("text")).forEach(e => e.style.color = colours[scheme].text)
 
 	draw.clear()
-	drawLogo()
+	drawT ()
+	drawO ()
+	drawR ()
+	drawU ()
 	drawGrid()
 }
 
