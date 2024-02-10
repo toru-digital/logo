@@ -1,9 +1,3 @@
-/*
-- fix weird plusses
-- why are there gaps
-- get padding perfect
-- colour main logo 
-*/
 
 const colours = {
 	"white-on-black": {
@@ -91,7 +85,6 @@ const drawGrid = () => {
 	for (let x = 0; x < num_cols; x++) {
 		for (let y = 0; y < num_rows; y++) {
 			shape_class = ".letter-" + Math.floor(Math.random() * 4)
-			console.log (x,y, shape_class)
 
 			draw.use (draw.defs().findOne(shape_class))
 			.attr({fill: 'white'})

@@ -1,0 +1,3 @@
+- get padding perfect
+- add switcher
+- map out ideas
