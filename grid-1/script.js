@@ -46,7 +46,6 @@ const drawLogo = () => {
 		return draw
 			.path(`M ${s2}  0 L ${s3} 0 L ${s3} ${s2} L ${s1} ${s2} L ${s1} ${s3} L ${s3} ${s3} L ${s3} ${s1} L ${s2} ${s1} L ${s2} ${s3} L 0 ${s3} L 0 ${s2} L ${s2} ${s2} L ${s2} 0`)
 			.attr({fill: colours[scheme].logo})
-			.hide ()
 	}
 
 	const drawO = () => {
@@ -54,13 +53,11 @@ const drawLogo = () => {
 			.rect(settings.size, settings.size)
 			.radius(settings.size * 0.5 * settings.growth, settings.size * 0.5 * settings.growth)
 			.attr({fill: colours[scheme].logo})
-			.hide ()
 	}
 
 	const drawR = () => {
 		return draw.rect(settings.size, settings.size)
 			.attr({fill: colours[scheme].logo})
-			.hide ()
 	}
 
 	const drawU = () => {
@@ -70,18 +67,14 @@ const drawLogo = () => {
 		const s4 = s1 * 0.15 * settings.growth
 		const s5 = s1 - s4
   
-		return draw
-		  .path(`
-			 M 0 0 
-			 H ${s1} 
-			 V ${s3} 
-			 C ${s1} ${s5} ${s5} ${s1} ${s3} ${s1} 
-			 H ${s2} 
-			 C ${s4} ${s1} 0 ${s5} 0 ${s3}`)
-		  .attr({
-			 fill: colours[scheme].logo
-		  })
-		  .hide ()
+		return draw.path(`
+			M 0 0 
+			H ${s1} 
+			V ${s3} 
+			C ${s1} ${s5} ${s5} ${s1} ${s3} ${s1} 
+			H ${s2} 
+			C ${s4} ${s1} 0 ${s5} 0 ${s3}`
+			).attr({fill: colours[scheme].logo})
 	 }
 
 	shapes[0] = drawT ()
@@ -95,21 +88,25 @@ const drawGrid = () => {
 
 	const container_height = document.getElementById("logo-container").getElementsByTagName("svg")[0].clientHeight
 	
-	const start = 0;
+	const start = 40;
 	const spacer = settings.padding + settings.size;
 	
 	const num_cols = Math.ceil (container_width / (settings.size + settings.padding))
 	const num_rows = Math.ceil (container_height / (settings.size + settings.padding))
+
+	let shape_index
 	
-	// for (let x = 0; x < num_cols; x++) {
-	// 	for (let y = 0; y < num_rows; y++) {
-	// 		if (x < 4  && y === 0) continue;
-	// 			draw.use (shapes[Math.floor(Math.random() * 4)]).move (
-	// 			start + x * spacer, 
-	// 			start + y * spacer
-	// 		)
-	// 	}
-	// }
+	for (let x = 0; x < num_cols; x++) {
+		for (let y = 0; y < num_rows; y++) {
+			shape_index = Math.floor(Math.random() * 4)
+			// console.log (shape_index, shapes[shape_index])
+			console.log (start + x * spacer, start + y * spacer)
+			draw.use (shapes[shape_index]).show ().move (
+				start + x * spacer, 
+				start + y * spacer
+			).attr({fill: "red"})
+		}
+	}
 }
 
 const setColours = s => {
