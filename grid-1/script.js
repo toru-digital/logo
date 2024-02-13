@@ -28,8 +28,8 @@ const colours = {
 }
 
 const settings = {
-	size: 30,
-	padding: 4,
+	size: 40,
+	padding: 6,
 	growth: 1
 }
 
