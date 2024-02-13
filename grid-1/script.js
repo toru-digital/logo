@@ -18,6 +18,13 @@ const colours = {
 		text: "#000",
 		logo: "#000"
 	},
+	"dark": {
+		background: "#000",
+		controls: "#000",
+		text: "#000",
+		logo_background: "#191919",
+		logo: "#FFF"
+	},
 }
 
 const settings = {
@@ -26,7 +33,7 @@ const settings = {
 	growth: 1
 }
 
-let scheme = "white-on-black"
+let scheme = "dark"
 
 const draw = SVG().addTo('#logo-container')
 
@@ -72,22 +79,27 @@ const drawU = () => {
 const drawGrid = () => {
 
 	const container_width = document.getElementById("logo-container").getElementsByTagName("svg")[0].clientWidth
-
 	const container_height = document.getElementById("logo-container").getElementsByTagName("svg")[0].clientHeight
 	
-	const start = 0;
+	const start = settings.padding;
 	const spacer = settings.padding + settings.size;
 	
 	const num_cols = Math.ceil (container_width / (settings.size + settings.padding))
 	const num_rows = Math.ceil (container_height / (settings.size + settings.padding))
 
 	let shape_class
+	let shape_index
+	let shape_colour
+	let is_main_logo
 	for (let x = 0; x < num_cols; x++) {
 		for (let y = 0; y < num_rows; y++) {
-			shape_class = ".letter-" + Math.floor(Math.random() * 4)
+			is_main_logo = y == 0 && x < 4
+			shape_index = is_main_logo ? x : Math.floor(Math.random()  * 4);
+			shape_class = ".letter-" + shape_index
+			shape_colour = is_main_logo ? colours[scheme].logo : colours[scheme].logo_background
 
 			draw.use (draw.defs().findOne(shape_class))
-			.attr({fill: 'white'})
+			.attr({fill: shape_colour})
 			.move (
 				start + x * spacer, 
 				start + y * spacer )
