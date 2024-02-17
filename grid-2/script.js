@@ -3,6 +3,7 @@ import {drawT, drawO, drawR, drawU} from './_shapes.js';
 import {getRowsAndCols} from './_utils.js';
 
 const draw = SVG().addTo('#logo-container')
+let interval
 
 const drawGrid = () => {
 	const {num_rows, num_cols} = getRowsAndCols ()
@@ -34,7 +35,15 @@ const setup = () => {
 	drawO (draw)
 	drawR (draw)
 	drawU (draw)
+	
 	drawGrid()
 }
 
 setup()
+
+const update = () => {
+	console.log ("hi")
+}
+
+clearInterval (interval)
+interval = setInterval (update, 50)
