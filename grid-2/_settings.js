@@ -1,8 +1,8 @@
 export const colours = {
 	"dark": {
 		background: "#000",
-		logo_background: "#191919",
-		logo: "#FFF"
+		logo_background: "rgba(255, 255, 255, 0.1)",
+		logo: "rgba(255, 255, 255, 1)"
 	},
 }
 
