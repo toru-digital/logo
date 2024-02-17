@@ -52,7 +52,13 @@ const setup = () => {
 setup()
 
 const update = () => {
-	console.log ("hi")
+	blocks.forEach (block => {
+		if (block.is_main_logo) {
+			block.block.animate (5).opacity (1)
+		} else {
+			block.block.animate (5).opacity (Math.random()*0.15)
+		}
+	})
 }
 
 clearInterval (interval)
