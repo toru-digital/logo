@@ -56,11 +56,17 @@ const setup = () => {
 setup()
 
 const update = () => {
-	blocks.forEach (block => {
+	blocks.forEach ((block) => {
+		let change_shape = Math.random() < 0.1
+		if (! block.is_main_logo && change_shape) {
+			let shape_class = ".letter-" + Math.floor(Math.random()  * 4)
+			block.block.use (draw.defs().findOne(shape_class))
+		}
+
 		if (block.is_main_logo) {
 			block.block.opacity (1)
 		} else {
-			block.block.opacity (Math.random()*0.15)
+			block.block.opacity (Math.random()*0.12)
 		}
 	})
 }
