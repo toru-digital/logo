@@ -1,23 +1,19 @@
 import {colours, settings} from './_settings.js';
 import {drawT, drawO, drawR, drawU} from './_shapes.js';
+import {getRowsAndCols} from './_utils.js';
 
 const draw = SVG().addTo('#logo-container')
 
 const drawGrid = () => {
+	const {num_rows, num_cols} = getRowsAndCols ()
 
-	const container_width = document.getElementById("logo-container").getElementsByTagName("svg")[0].clientWidth
-	const container_height = document.getElementById("logo-container").getElementsByTagName("svg")[0].clientHeight
-	
-	const start = settings.padding;
 	const spacer = settings.padding + settings.size;
-	
-	const num_cols = Math.ceil (container_width / (settings.size + settings.padding))
-	const num_rows = Math.ceil (container_height / (settings.size + settings.padding))
-
+	const start = settings.padding;
 	let shape_class
 	let shape_index
 	let shape_colour
 	let is_main_logo
+
 	for (let x = 0; x < num_cols; x++) {
 		for (let y = 0; y < num_rows; y++) {
 			is_main_logo = y == 0 && x < 4
