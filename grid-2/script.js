@@ -54,9 +54,9 @@ setup()
 const update = () => {
 	blocks.forEach (block => {
 		if (block.is_main_logo) {
-			block.block.animate (5).opacity (1)
+			block.block.opacity (1)
 		} else {
-			block.block.animate (5).opacity (Math.random()*0.15)
+			block.block.opacity (Math.random()*0.15)
 		}
 	})
 }
