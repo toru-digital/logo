@@ -6,13 +6,9 @@ const draw = SVG().addTo('#logo-container')
 
 const drawGrid = () => {
 	const {num_rows, num_cols} = getRowsAndCols ()
-
 	const spacer = settings.padding + settings.size;
 	const start = settings.padding;
-	let shape_class
-	let shape_index
-	let shape_colour
-	let is_main_logo
+	let shape_class, shape_index, shape_colour, is_main_logo
 
 	for (let x = 0; x < num_cols; x++) {
 		for (let y = 0; y < num_rows; y++) {
@@ -30,12 +26,9 @@ const drawGrid = () => {
 	}
 }
 
-const setColours = s => {
-	settings.scheme = s
+const setup = () => {
 	document.body.style.backgroundColor = colours[settings.scheme].background
-	document.getElementById("controls-container").style.backgroundColor = colours[settings.scheme].controls
-	Array.from(document.getElementsByClassName("text")).forEach(e => e.style.color = colours[settings.scheme].text)
-
+	
 	draw.clear()
 	drawT (draw)
 	drawO (draw)
@@ -44,4 +37,4 @@ const setColours = s => {
 	drawGrid()
 }
 
-setColours(settings.scheme)
+setup()
