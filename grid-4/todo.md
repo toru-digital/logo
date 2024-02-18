@@ -4,7 +4,7 @@ as you move the cursor around it sends ripples of stochastic movement outwards. 
 
 ## steps
 
-- [ ] interval function
-- [ ] grid array
-- [ ] chaos number
-- [ ] random variation
+- [ ]
+- [ ]
+- [ ]
+- [ ]

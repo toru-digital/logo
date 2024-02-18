@@ -75,24 +75,22 @@ const update = () => {
 			block.block.use (draw.defs().findOne(shape_class))
 		}
 
-		// block.chaos = Math.max(0, block.chaos - 0.0000001)
+		block.chaos = Math.max(0, block.chaos - 0.03)
 	})
 }
 
 clearInterval (interval)
 interval = setInterval (update, 50)
 
-
-
 const onMouseMove = e => {
-	blocks.forEach ((block) => {
+	blocks.forEach ((block, i) => {
 		let distance = Math.sqrt(
 			Math.pow(e.clientX - block.block.x(), 2) + 
 			Math.pow(e.clientY - block.block.y(), 2)
 		)
 
-		let new_chaos = (1 - distance / max_distance*2.5)
-		block.chaos = Math.min(1, new_chaos);
+		let new_chaos = Math.min (1, Math.max ((1 - distance / max_distance*8), 0))
+		block.chaos = Math.max(block.chaos, new_chaos);
 	})
 }
 
