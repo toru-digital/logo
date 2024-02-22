@@ -22,11 +22,12 @@ const food = {
 }
 
 const turnUp = () => {
-	console.log ("U")
-	if ( dir == 'down' ) return
-	dir = 'up';
-	snake.dirY = -settings.sizeCell;
-	snake.dirX = 0;
+	restart ()
+	// console.log ("U")
+	// if ( dir == 'down' ) return
+	// dir = 'up';
+	// snake.dirY = -settings.sizeCell;
+	// snake.dirX = 0;
 }
 
 const turnLeft = () => {
@@ -53,44 +54,40 @@ const turnRight = () => {
 	snake.dirY = 0;
 }
 
-const checkBorder = () => { 
-	if ( snake.x < 0 ) {
-		snake.x = canvas.width - settings.sizeCell;
-	} else if ( snake.x >= canvas.width ) {
-		snake.x = 0;
-	}
+// const checkBorder = () => { 
+// 	if ( snake.x < 0 ) {
+// 		snake.x = canvas.width - settings.sizeCell;
+// 	} else if ( snake.x >= canvas.width ) {
+// 		snake.x = 0;
+// 	}
 
-	if ( snake.y < 0 ) {
-		snake.y = canvas.height - settings.sizeCell;
-	} else if ( snake.y >= canvas.height ) {
-		snake.y = 0;
-	}
-}
-
-function drawFood () {
-	// ctx.fillStyle = '#00FF00';
-	// ctx.fillRect(food.x, food.y, config.sizeCell, config.sizeCell);
-
-	console.log ("DRAW FOOD AT ", food.x, food.y)
-}
+// 	if ( snake.y < 0 ) {
+// 		snake.y = canvas.height - settings.sizeCell;
+// 	} else if ( snake.y >= canvas.height ) {
+// 		snake.y = 0;
+// 	}
+// }
 
 const randomPosFood = () => {
-	food.x = randomInt(0, 5) * settings.sizeCell;
-	food.y = randomInt(0, 5) * settings.sizeCell;
-	drawFood();
+	const {num_rows, num_cols} = getRowsAndCols ()
+	food.x = randomInt(0, num_rows);
+	food.y = randomInt(0, num_cols);
 }
 
 const restart = () => {
-	settings.stepMax = 6;
-	scoreCount = 0;
+	// const {num_rows, num_cols} = getRowsAndCols ()
 
-	snake.x = settings.sizeCell;
-	snake.y = settings.sizeCell;
-	snake.body = [];
-	snake.maxBodySize = 1;
-	snake.dirX = 0;
-	snake.dirY = 0;
-	dir = '';
+	// settings.stepMax = 6;
+	// scoreCount = 0;
+
+	// snake.x = randomInt(0, num_cols);
+	// snake.y = randomInt(0, num_rows);
+	// snake.body = [];
+	// snake.maxBodySize = 1;
+	// snake.dirX = 0;
+	// snake.dirY = 0;
+
+	// dir = '';
 
 	randomPosFood();
 }
@@ -145,16 +142,15 @@ setup()
 
 const update = () => {
 	blocks.forEach ((block) => {
-		let change_shape, opacity
+		let opacity, colour
+		const is_food = block.x == food.x && block.y == food.y
 
-		change_shape = Math.random() < 0.3 * block.chaos
-		opacity = 0.2; //Math.random()*0.3 * block.chaos
-		
+		// change_shape = Math.random() < 0.3 * block.chaos
+		opacity = is_food ? 1 : 0.1; //Math.random()*0.3 * block.chaos
+		colour = is_food ? "#EDFE06" : "white"
+
 		block.block.opacity (opacity)
-		if (change_shape) {
-			let shape_class = ".letter-" + Math.floor(Math.random()  * 4)
-			block.block.use (draw.defs().findOne(shape_class))
-		}
+		block.block.fill (colour)
 
 		block.chaos = Math.max(0, block.chaos - 0.03)
 	})
