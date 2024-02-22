@@ -11,6 +11,7 @@ nvm use 18;
 npm i;
 npx vite serve;
 ```
+
 ## Deploy
 
 Check the build out locally first...
@@ -22,3 +23,4 @@ npx vite preview;
 
 Push to the main branch, Github pages will depoloy automatically
 
+https://github.com/YegorMurunov/snake.js?tab=readme-ov-file

@@ -16,6 +16,7 @@ export default defineConfig({
 				grid2: resolve(__dirname, 'grid-2/index.html'),
 				grid3: resolve(__dirname, 'grid-3/index.html'),
 				grid4: resolve(__dirname, 'grid-4/index.html'),
+				grid5: resolve(__dirname, 'grid-5/index.html'),
 				ribbon1: resolve(__dirname, 'ribbon-1/index.html'),
 				ribbon2: resolve(__dirname, 'ribbon-2/index.html'),
 				scrollTrigger: resolve(__dirname, 'scroll-trigger/index.html'),
