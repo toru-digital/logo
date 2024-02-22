@@ -1,6 +1,6 @@
 import {colours, settings} from './_settings.js';
 import {drawT, drawO, drawR, drawU} from './_shapes.js';
-import {getRowsAndCols} from './_utils.js';
+import {getRowsAndCols, isMobile, randomInt} from './_utils.js';
 
 const draw = SVG().addTo('#logo-container')
 let interval, scoreCount = 0, dir = ''
@@ -14,6 +14,11 @@ const snake = {
 	
 	body: [],
 	maxBodySize: 1,
+}
+
+const food = { 
+	x: 0,
+	y: 0,
 }
 
 const turnUp = () => {
@@ -60,6 +65,34 @@ const checkBorder = () => {
 	} else if ( snake.y >= canvas.height ) {
 		snake.y = 0;
 	}
+}
+
+function drawFood () {
+	// ctx.fillStyle = '#00FF00';
+	// ctx.fillRect(food.x, food.y, config.sizeCell, config.sizeCell);
+
+	console.log ("DRAW FOOD AT ", food.x, food.y)
+}
+
+const randomPosFood = () => {
+	food.x = randomInt(0, 5) * settings.sizeCell;
+	food.y = randomInt(0, 5) * settings.sizeCell;
+	drawFood();
+}
+
+const restart = () => {
+	settings.stepMax = 6;
+	scoreCount = 0;
+
+	snake.x = settings.sizeCell;
+	snake.y = settings.sizeCell;
+	snake.body = [];
+	snake.maxBodySize = 1;
+	snake.dirX = 0;
+	snake.dirY = 0;
+	dir = '';
+
+	randomPosFood();
 }
 
 const drawBlock = (x, y) => {
@@ -130,6 +163,8 @@ const update = () => {
 clearInterval (interval)
 interval = setInterval (update, 50)
 
+restart()
+
 document.addEventListener('keydown', (e) => {
 	if ( e.keyCode == 87 || e.keyCode == 38 ) turnUp()
 	if ( e.keyCode == 65 || e.keyCode == 37 ) turnLeft()
@@ -137,3 +172,53 @@ document.addEventListener('keydown', (e) => {
 	if ( e.keyCode == 68 || e.keyCode == 39 ) turnRight()
 	e.preventDefault ()
 });
+
+// function gameLoop() {
+// 	requestAnimationFrame (gameLoop);
+
+// 	if ( ++config.step < config.stepMax ) return;
+// 	config.step = 0;
+
+// 	ctx.clearRect(0, 0, canvas.width, canvas.height);
+// 	drawFood();
+// 	drawSnake();
+// }
+
+// gameLoop();
+
+// function score() {
+// 	scoreCount++;
+// 	if ( scoreCount > 15 ) config.stepMax = 5;
+// 	else if ( scoreCount <= 15 ) config.stepMax = 6;
+// }
+
+// function drawSnake() {
+// 	snake.x += snake.dirX;
+// 	snake.y += snake.dirY;
+
+// 	checkBorder();
+
+// 	snake.body.unshift({x: snake.x, y: snake.y});
+// 	if ( snake.body.length > snake.maxBodySize ) {
+// 		snake.body.pop();
+// 	}
+
+// 	snake.body.forEach((e, index) => {
+
+// 		ctx.fillStyle = '#FFFFFF';
+// 		ctx.fillRect(e.x, e.y, config.sizeCell, config.sizeCell);
+
+// 		if ( e.x == food.x && e.y == food.y ) {
+
+// 			score();
+// 			randomPosFood();
+// 			snake.maxBodySize++;
+// 		}
+
+// 		for ( let i = index + 1; i < snake.body.length; i++ ) {
+// 			if ( e.x === snake.body[i].x && e.y === snake.body[i].y ) {
+// 				restart();
+// 			}
+// 		}
+// 	});
+// }
