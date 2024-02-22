@@ -154,7 +154,7 @@ const update = () => {
 }
 
 clearInterval (interval)
-interval = setInterval (update, 50)
+interval = setInterval (update, 100)
 
 restart()
 
@@ -166,24 +166,11 @@ document.addEventListener('keydown', (e) => {
 	e.preventDefault ()
 });
 
-// function gameLoop() {
-// 	requestAnimationFrame (gameLoop);
-
-// 	if ( ++config.step < config.stepMax ) return;
-// 	config.step = 0;
-
-// 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-// 	drawFood();
-// 	drawSnake();
-// }
-
-// gameLoop();
-
-// function score() {
-// 	scoreCount++;
-// 	if ( scoreCount > 15 ) config.stepMax = 5;
-// 	else if ( scoreCount <= 15 ) config.stepMax = 6;
-// }
+function score() {
+	scoreCount++;
+	if ( scoreCount > 15 ) settings.stepMax = 5;
+	else if ( scoreCount <= 15 ) settings.stepMax = 6;
+}
 
 const drawSnake = () => {
 	snake.x += snake.dirX;
@@ -197,20 +184,17 @@ const drawSnake = () => {
 		snake.body.pop();
 	}
 
-	// snake.body.forEach((e, index) => {
+	snake.body.forEach((e, index) => {
+		if ( e.x == food.x && e.y == food.y ) {
+			score();
+			randomPosFood();
+			snake.maxBodySize++;
+		}
 
-
-		// if ( e.x == food.x && e.y == food.y ) {
-
-		// 	score();
-		// 	randomPosFood();
-		// 	snake.maxBodySize++;
-		// }
-
-	// 	for ( let i = index + 1; i < snake.body.length; i++ ) {
-	// 		if ( e.x === snake.body[i].x && e.y === snake.body[i].y ) {
-	// 			restart();
-	// 		}
-	// 	}
-	// });
+		for ( let i = index + 1; i < snake.body.length; i++ ) {
+			if ( e.x === snake.body[i].x && e.y === snake.body[i].y ) {
+				restart();
+			}
+		}
+	});
 }
