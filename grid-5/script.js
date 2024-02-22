@@ -3,8 +3,53 @@ import {drawT, drawO, drawR, drawU} from './_shapes.js';
 import {getRowsAndCols} from './_utils.js';
 
 const draw = SVG().addTo('#logo-container')
-let interval, max_distance = 1000
+let interval, scoreCount = 0, dir = ''
 const blocks = []
+
+const snake = {
+	x: settings.sizeCell,
+	y: settings.sizeCell,
+	dirX: 0,
+	dirY: 0,
+	
+	body: [],
+	maxBodySize: 1,
+}
+
+const turnLeft = () => {
+	if ( dir == 'right' ) return
+	dir = 'left';
+	snake.dirX = -settings.sizeCell;
+	snake.dirY = 0;
+}
+
+const turnDown = () => {
+	if ( dir == 'up' ) return
+	dir = 'down';
+	snake.dirY = settings.sizeCell;
+	snake.dirX = 0;
+}
+
+const turnRight = () => {
+	if ( dir == 'left' ) return
+	dir = 'right';
+	snake.dirX = settings.sizeCell;
+	snake.dirY = 0;
+}
+
+const checkBorder = () => { 
+	if ( snake.x < 0 ) {
+		snake.x = canvas.width - settings.sizeCell;
+	} else if ( snake.x >= canvas.width ) {
+		snake.x = 0;
+	}
+
+	if ( snake.y < 0 ) {
+		snake.y = canvas.height - settings.sizeCell;
+	} else if ( snake.y >= canvas.height ) {
+		snake.y = 0;
+	}
+}
 
 const drawBlock = (x, y) => {
 	const spacer = settings.padding + settings.size;
@@ -32,8 +77,7 @@ const drawBlock = (x, y) => {
 }
 
 const drawGrid = () => {
-	const {num_rows, num_cols, hypot} = getRowsAndCols ()
-	max_distance = hypot
+	const {num_rows, num_cols} = getRowsAndCols ()
 	for (let x = 0; x < num_cols; x++) {
 		for (let y = 0; y < num_rows; y++) {
 			blocks.push (drawBlock (x,y))
@@ -60,7 +104,7 @@ const update = () => {
 		let change_shape, opacity
 
 		change_shape = Math.random() < 0.3 * block.chaos
-		opacity = 0.2;//Math.random()*0.3 * block.chaos
+		opacity = 0.2; //Math.random()*0.3 * block.chaos
 		
 		block.block.opacity (opacity)
 		if (change_shape) {
@@ -74,3 +118,11 @@ const update = () => {
 
 clearInterval (interval)
 interval = setInterval (update, 50)
+
+document.addEventListener('keydown', (e) => {
+	if ( e.keyCode == 87 || e.keyCode == 38 ) turnUp()
+	if ( e.keyCode == 65 || e.keyCode == 37 ) turnLeft()
+	if ( e.keyCode == 83 || e.keyCode == 40 ) turnDown()
+	if ( e.keyCode == 68 || e.keyCode == 39 ) turnRight()
+	e.preventDefault ()
+});

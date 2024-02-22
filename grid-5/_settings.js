@@ -10,5 +10,9 @@ export const settings = {
 	size: 40,
 	padding: 6,
 	growth: 1,
-	scheme: "dark"
+	scheme: "dark",
+	sizeCell: 24,
+	sizeFood: 24,
+	step: 0,
+	stepMax: 7,
 }
