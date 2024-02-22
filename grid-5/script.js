@@ -67,8 +67,10 @@ const checkBorder = () => {
 
 const randomPosFood = () => {
 	const {num_rows, num_cols} = getRowsAndCols ()
-	food.x = randomInt(0, num_rows);
-	food.y = randomInt(0, num_cols);
+	food.x = randomInt(0, num_cols);
+	food.y = randomInt(0, num_rows);
+
+	console.log (num_rows, num_cols, food.x, food.y)
 }
 
 const restart = () => {
@@ -154,7 +156,7 @@ const update = () => {
 }
 
 clearInterval (interval)
-interval = setInterval (update, 100)
+interval = setInterval (update, 75)
 
 restart()
 
