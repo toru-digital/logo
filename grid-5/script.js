@@ -16,7 +16,16 @@ const snake = {
 	maxBodySize: 1,
 }
 
+const turnUp = () => {
+	console.log ("U")
+	if ( dir == 'down' ) return
+	dir = 'up';
+	snake.dirY = -settings.sizeCell;
+	snake.dirX = 0;
+}
+
 const turnLeft = () => {
+	console.log ("L")
 	if ( dir == 'right' ) return
 	dir = 'left';
 	snake.dirX = -settings.sizeCell;
@@ -24,6 +33,7 @@ const turnLeft = () => {
 }
 
 const turnDown = () => {
+	console.log ("D")
 	if ( dir == 'up' ) return
 	dir = 'down';
 	snake.dirY = settings.sizeCell;
@@ -31,6 +41,7 @@ const turnDown = () => {
 }
 
 const turnRight = () => {
+	console.log ("R")
 	if ( dir == 'left' ) return
 	dir = 'right';
 	snake.dirX = settings.sizeCell;
